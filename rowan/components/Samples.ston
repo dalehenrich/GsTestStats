@@ -4,7 +4,7 @@ RwSimpleProjectLoadComponentV2 {
 	#projectNames : [ ],
 	#componentNames : [ ],
 	#packageNames : [
-		'RWSTestStats-Samples'
+		'GsTestStats-Samples'
 	],
 	#comment : ''
 }

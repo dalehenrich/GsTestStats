@@ -613,7 +613,7 @@ GtsTestSuiteSample >> testCases: anArrayOfTestCaseSampleDictionaries [
 	anArrayOfTestCaseSampleDictionaries
 		do: [ :sampleDict | 
 			| testCaseSample |
-			testCaseSample := RwsTestCaseSample fromDictionary: sampleDict.
+			testCaseSample := GtsTestCaseSample fromDictionary: sampleDict.
 			testCaseSample suite: self.
 			self testCases add: testCaseSample ]
 ]
