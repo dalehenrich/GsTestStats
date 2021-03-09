@@ -1,0 +1,13 @@
+RwLoadSpecificationV2 {
+	#specName : 'GsTestStats',
+	#projectName : 'GsTestStats',
+	#gitUrl : 'https://github.com/dalehenrich/GsTestStats',
+	#revision : 'master',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Samples'
+	],
+	#customConditionalAttributes : [
+	],
+	#comment : 'test results tracking'
+}
