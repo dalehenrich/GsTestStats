@@ -1,0 +1,41 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+  SuperDoitCommandLineOption long: 'branch'.
+  SuperDoitCommandLineOption long: 'help' short: 'h'.
+  SuperDoitCommandLineOption long: 'debug' short: 'D'.
+}
+%
+usage
+USAGE $basename [--help | -h] [--debug | -D] \
+  --branch=<branch-name> <test-results-json-file>
+
+DESCRIPTION
+  Add the given <test-results-json-file> for the given branch to the data base.
+    The gemstone version is embedded in the <test-results-json-file>, so does
+    not need to be specified.
+
+OPTIONS
+ --help | -h
+    Display usage message.
+  --debug | -D
+    Without this option, when an error occurs, the error message is written to
+      stdout. If this option is supplied, the topaz debugger will come in the 
+      event of an error.
+
+EXAMPLES
+  $basename --help
+  $basename -h
+  $basename --debug
+  $basename -D
+  $basename --branch=masterV2.1 testResults.json
+%
+doit
+	[
+		self getOpts: self optionSpecs.
+	] on: Error do: [:ex | 
+		self debug ifFalse: [ ^ ex description ].
+		ex pass ].
+	self help ifTrue: [ ^ self usage ].
+"code goes here"
+%
