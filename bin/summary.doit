@@ -55,8 +55,8 @@ doit
 			latestQuerySuiteSampleFor: self branch
 			andVersion: self version.
 		suiteSample suiteSummaryOn: self stdout.
+		^ true
 	] on: Error do: [:ex | 
-		self debug ifFalse: [ ^ ex description ].
-		ex pass ].
-	^ true
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
 %

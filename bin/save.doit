@@ -58,11 +58,9 @@ doit
     self getAndVerifyOptions == self noResult
 			ifTrue: [ ^ self noResult ].
 		suiteSample := self _suiteSamplesFrom: self jsonFile.
-		GsTestSuiteSample suiteSamples add: suiteSample
-
+		GsTestSuiteSample suiteSamples add: suiteSample.
+		^ System commit
 	] on: Error do: [:ex | 
-		self debug ifFalse: [ ^ ex description ].
-		ex pass ].
-
-	^ System commit
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
 %

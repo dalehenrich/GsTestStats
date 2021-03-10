@@ -68,9 +68,9 @@ doit
 			compareLatestTestCasesFor: self version
 				branch: self branch
 				to: suiteSample
-				on: self stdout
+				on: self stdout.
+		^ true
 	] on: Error do: [:ex | 
-		self debug ifFalse: [ ^ ex description ].
-		ex pass ].
-	^ true
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
 %
