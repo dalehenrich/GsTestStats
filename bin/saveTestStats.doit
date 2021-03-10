@@ -22,11 +22,8 @@ OPTIONS
   <test-results-json-file>   name of the .json file that contains the test results
       --branch=<branch-name> name of the branch to be associated with test results
                                in the <test-results-json-file>
-  -h, --help                 display usage message.
-  -D, --debug                without this option, when an error occurs, the error
-                             message is written to stdout. If this option is
-                             supplied, the topaz debugger will come in the event
-                             of an error.
+  -h, --help                 display usage message
+  -D, --debug                bring up a topaz debugger in the event of an error
 
 EXAMPLES
   $basename gs_370 --help
@@ -50,13 +47,12 @@ doit
 	[
 		| suiteSample |
 		self getOpts: self optionSpecs.
-
 		self help ifTrue: [ ^ self usage ].
-
 		self branch 
 			ifNil: [ self error: 'Required ''--branch'' option not set' ].
 		self positionalArgs size < 1 
 			ifTrue: [self error: 'Missing positional argument <test-results-json-file>'].
+
 		suiteSample := self _suiteSamplesFrom: self jsonFile.
 		GsTestSuiteSample suiteSamples add: suiteSample
 
