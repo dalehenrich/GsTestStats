@@ -567,7 +567,7 @@ GsTestSuiteSample >> suiteSummaryOn: strm [
 	self printOn: strm.
 	strm lf.
 	strm
-		nextPutAll: (self resultsSummary at: #'summary');
+		nextPutAll: (self resultsSummary at: 'summary');
 		lf.
 	passed := {}.
 	failed := {}.

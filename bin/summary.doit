@@ -13,17 +13,17 @@ USAGE $basename <stone-name> [--help | -h] [--debug | -D] \
             --branch=<branch-name> --version=<gemstone-version>
 
 DESCRIPTION
-  Extract the test results summary for the test suite with the given <branch-namee>
+  Extract the test results summary for the latest test case with the given <branch-namee>
     and <gemstone-version>.
 
 OPTIONS
   <stone-name>               name of the stone in which this script will be 
                                executed
       --branch=<branch-name> name of the branch to be used in the query against
-                               existing test suite sample in the stone
+                               existing test case sample in the stone
       --version=<gemstone-version>
                              gemstone version to be used in the query against
-                               existing test suite sample in the stone
+                               existing test case sample in the stone
   -h, --help                 display usage message
   -D, --debug                bring up a topaz debugger in the event of an error
 
@@ -37,6 +37,7 @@ EXAMPLES
 %
 doit
 	[
+    | suiteSample |
 		self getOpts: self optionSpecs.
 		self help ifTrue: [ ^ self usage ].
 		self branch 
@@ -46,9 +47,13 @@ doit
 		self positionalArgs size > 0
 			ifTrue: [self error: 'Unexpected positional argument(s) ', self positionalArgs printString].
 
-"write script here"
+    suiteSample := GsTestSuiteSample 
+			latestQuerySuiteSampleFor: self branch
+			andVersion: self version.
+		suiteSample suiteSummaryOn: self stdout.
 
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
+true
 %
