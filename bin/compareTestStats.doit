@@ -2,7 +2,7 @@
 options
 {
   SuperDoitRequiredCommandLineOption long: 'branch'.
-  SuperDoitCommandLineOption long: 'version'.
+  SuperDoitRequiredCommandLineOption long: 'version'.
   SuperDoitCommandLineOption long: 'help' short: 'h'.
   SuperDoitCommandLineOption long: 'debug' short: 'D'.
 }
@@ -49,15 +49,22 @@ _suiteSamplesFrom: aFileReference
 %
 doit
 	[
-		|  |
+		| suiteSample |
 		self getOpts: self optionSpecs.
 		self help ifTrue: [ ^ self usage ].
 		self branch 
 			ifNil: [ self error: 'Required ''--branch'' option not set' ].
+		self version 
+			ifNil: [ self error: 'Required ''--version'' option not set' ].
 		self positionalArgs size < 1 
 			ifTrue: [self error: 'Missing positional argument <test-results-json-file>'].
 
-		"put your code here"
+		suiteSample := self _suiteSamplesFrom: self jsonFile.
+		GsTestSuiteSample 
+			compareLatestTestCasesFor: self version
+				branch: self branch
+				to: suiteSample
+				on: self stdout
 
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
