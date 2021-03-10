@@ -48,15 +48,15 @@ getAndVerifyOptions
 %
 doit
 	[
-    | suiteSample |
-    self getAndVerifyOptions.
+		| suiteSample |
+		self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
     suiteSample := GsTestSuiteSample 
 			latestQuerySuiteSampleFor: self branch
 			andVersion: self version.
 		suiteSample suiteSummaryOn: self stdout.
-
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
-true
+	^ true
 %

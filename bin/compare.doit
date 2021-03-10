@@ -61,16 +61,16 @@ getAndVerifyOptions
 doit
 	[
 		| suiteSample |
-    self getAndVerifyOptions.
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
 		suiteSample := self _suiteSamplesFrom: self jsonFile.
 		GsTestSuiteSample 
 			compareLatestTestCasesFor: self version
 				branch: self branch
 				to: suiteSample
 				on: self stdout
-
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
-  true
+	^ true
 %

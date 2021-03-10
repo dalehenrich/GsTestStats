@@ -55,7 +55,8 @@ getAndVerifyOptions
 doit
 	[
 		| suiteSample |
-    self getAndVerifyOptions.
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
 		suiteSample := self _suiteSamplesFrom: self jsonFile.
 		GsTestSuiteSample suiteSamples add: suiteSample
 
@@ -63,5 +64,5 @@ doit
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
 
-	System commit
+	^ System commit
 %
