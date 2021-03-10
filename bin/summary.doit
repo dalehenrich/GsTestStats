@@ -10,17 +10,15 @@ options
 usage
 -----
 USAGE $basename <stone-name> [--help | -h] [--debug | -D] \
-            --branch=<branch-name> --version=<gemstone-version> <test-results-json-file>
+            --branch=<branch-name> --version=<gemstone-version>
 
 DESCRIPTION
-  Compare the given testsResults.json file against the test suite sample in the
-    stone for the given <branch-NAME> and <gemstone-version>.
+  Extract the test results summary for the test suite with the given <branch-namee>
+    and <gemstone-version>.
 
 OPTIONS
   <stone-name>               name of the stone in which this script will be 
                                executed
-  <test-results-json-file>   name of the .json file that contains the test
-                               results
       --branch=<branch-name> name of the branch to be used in the query against
                                existing test suite sample in the stone
       --version=<gemstone-version>
@@ -37,37 +35,20 @@ EXAMPLES
   $basename gs_370 --branch=masterV2.1 testResults.json
 -----
 %
-method
-jsonFile
-	^ (self positionalArgs at: 1) asFileReference
-%
-method
-_suiteSamplesFrom: aFileReference
-	^ (GsTestSuiteSample fromJson: aFileReference)
-		branch: self branch;
-		yourself
-%
 doit
 	[
-		| suiteSample |
 		self getOpts: self optionSpecs.
 		self help ifTrue: [ ^ self usage ].
 		self branch 
 			ifNil: [ self error: 'Required ''--branch'' option not set' ].
 		self version 
 			ifNil: [ self error: 'Required ''--version'' option not set' ].
-		self positionalArgs size < 1 
-			ifTrue: [self error: 'Missing positional argument <test-results-json-file>'].
+		self positionalArgs size > 0
+			ifTrue: [self error: 'Unexpected positional argument(s) ', self positionalArgs printString].
 
-		suiteSample := self _suiteSamplesFrom: self jsonFile.
-		GsTestSuiteSample 
-			compareLatestTestCasesFor: self version
-				branch: self branch
-				to: suiteSample
-				on: self stdout
+"write script here"
 
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
-  true
 %
