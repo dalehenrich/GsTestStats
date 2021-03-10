@@ -7,8 +7,9 @@ options
 }
 %
 usage
-USAGE $basename [--help | -h] [--debug | -D] \
-  <stone-name> --branch=<branch-name> <test-results-json-file>
+-----
+USAGE $basename <stone-name> [--help | -h] [--debug | -D] \
+            --branch=<branch-name> <test-results-json-file>
 
 DESCRIPTION
   Add the given <test-results-json-file> for the given branch to the data base.
@@ -16,18 +17,16 @@ DESCRIPTION
     not need to be specified.
 
 OPTIONS
-  <stone-name>
-    name of the stone with GsTestStats project loaded
-  <test-results-json-file>
-    name of the .json file that contains the test results
-  --branch=<branch-name>
-    name of the branch to be associated with test results in the <test-results-json-file>
-  --help | -h
-    Display usage message.
-  --debug | -D
-    Without this option, when an error occurs, the error message is written to
-      stdout. If this option is supplied, the topaz debugger will come in the 
-      event of an error.
+  <stone-name>               name of the stone in which this script will be 
+                               executed
+  <test-results-json-file>   name of the .json file that contains the test results
+      --branch=<branch-name> name of the branch to be associated with test results
+                               in the <test-results-json-file>
+  -h, --help                 display usage message.
+  -D, --debug                without this option, when an error occurs, the error
+                             message is written to stdout. If this option is
+                             supplied, the topaz debugger will come in the event
+                             of an error.
 
 EXAMPLES
   $basename gs_370 --help
@@ -35,6 +34,7 @@ EXAMPLES
   $basename gs_370 --debug --branch=masterV2.1 testResults.json
   $basename gs_370 -D --branch=masterV2.1 testResults.json
   $basename gs_370 --branch=masterV2.1 testResults.json
+-----
 %
 method
 jsonFile
@@ -50,6 +50,9 @@ doit
 	[
 		| suiteSample |
 		self getOpts: self optionSpecs.
+
+		self help ifTrue: [ ^ self usage ].
+
 		self branch 
 			ifNil: [ self error: 'Required ''--branch'' option not set' ].
 		self positionalArgs size < 1 
@@ -60,7 +63,6 @@ doit
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
-	self help ifTrue: [ ^ self usage ].
 
 	System commit
 %
