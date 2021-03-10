@@ -47,9 +47,8 @@ _suiteSamplesFrom: aFileReference
 		branch: self branch;
 		yourself
 %
-doit
-	[
-		| suiteSample |
+method
+getAndVerifyOptions
 		self getOpts: self optionSpecs.
 		self help ifTrue: [ ^ self usage ].
 		self branch 
@@ -58,7 +57,11 @@ doit
 			ifNil: [ self error: 'Required ''--version'' option not set' ].
 		self positionalArgs size < 1 
 			ifTrue: [self error: 'Missing positional argument <test-results-json-file>'].
-
+%
+doit
+	[
+		| suiteSample |
+    self getAndVerifyOptions.
 		suiteSample := self _suiteSamplesFrom: self jsonFile.
 		GsTestSuiteSample 
 			compareLatestTestCasesFor: self version

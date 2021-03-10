@@ -35,9 +35,8 @@ EXAMPLES
   $basename gs_370 --branch=masterV2.1 testResults.json
 -----
 %
-doit
-	[
-    | suiteSample |
+method
+getAndVerifyOptions
 		self getOpts: self optionSpecs.
 		self help ifTrue: [ ^ self usage ].
 		self branch 
@@ -46,7 +45,11 @@ doit
 			ifNil: [ self error: 'Required ''--version'' option not set' ].
 		self positionalArgs size > 0
 			ifTrue: [self error: 'Unexpected positional argument(s) ', self positionalArgs printString].
-
+%
+doit
+	[
+    | suiteSample |
+    self getAndVerifyOptions.
     suiteSample := GsTestSuiteSample 
 			latestQuerySuiteSampleFor: self branch
 			andVersion: self version.
