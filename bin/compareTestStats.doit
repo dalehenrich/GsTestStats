@@ -32,9 +32,11 @@ EXAMPLES
 doit
 	[
 		self getOpts: self optionSpecs.
+
+"code goes here"
+
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
 	self help ifTrue: [ ^ self usage ].
-"code goes here"
 %

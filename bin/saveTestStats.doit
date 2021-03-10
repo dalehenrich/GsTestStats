@@ -1,14 +1,14 @@
-#!/usr/bin/env superdoit_solo
+#!/usr/bin/env superdoit_home
 options
 {
-  SuperDoitCommandLineOption long: 'branch'.
+  SuperDoitRequiredCommandLineOption long: 'branch'.
   SuperDoitCommandLineOption long: 'help' short: 'h'.
   SuperDoitCommandLineOption long: 'debug' short: 'D'.
 }
 %
 usage
 USAGE $basename [--help | -h] [--debug | -D] \
-  --branch=<branch-name> <test-results-json-file>
+  <stone-name> --branch=<branch-name> <test-results-json-file>
 
 DESCRIPTION
   Add the given <test-results-json-file> for the given branch to the data base.
@@ -16,7 +16,13 @@ DESCRIPTION
     not need to be specified.
 
 OPTIONS
- --help | -h
+  <stone-name>
+    name of the stone with GsTestStats project loaded
+  <test-results-json-file>
+    name of the .json file that contains the test results
+  --branch=<branch-name>
+    name of the branch to be associated with test results in the <test-results-json-file>
+  --help | -h
     Display usage message.
   --debug | -D
     Without this option, when an error occurs, the error message is written to
@@ -24,18 +30,37 @@ OPTIONS
       event of an error.
 
 EXAMPLES
-  $basename --help
-  $basename -h
-  $basename --debug
-  $basename -D
-  $basename --branch=masterV2.1 testResults.json
+  $basename gs_370 --help
+  $basename gs_370 -h
+  $basename gs_370 --debug --branch=masterV2.1 testResults.json
+  $basename gs_370 -D --branch=masterV2.1 testResults.json
+  $basename gs_370 --branch=masterV2.1 testResults.json
+%
+method
+jsonFile
+	^ (self positionalArgs at: 1) asFileReference
+%
+method
+_suiteSamplesFrom: aFileReference
+	^ (GsTestSuiteSample fromJson: aFileReference)
+		branch: self branch;
+		yourself
 %
 doit
 	[
+		| suiteSample |
 		self getOpts: self optionSpecs.
+		self branch 
+			ifNil: [ self error: 'Required ''--branch'' option not set' ].
+		self positionalArgs size < 1 
+			ifTrue: [self error: 'Missing positional argument <test-results-json-file>'].
+		suiteSample := self _suiteSamplesFrom: self jsonFile.
+		GsTestSuiteSample suiteSamples add: suiteSample
+
 	] on: Error do: [:ex | 
 		self debug ifFalse: [ ^ ex description ].
 		ex pass ].
 	self help ifTrue: [ ^ self usage ].
-"code goes here"
+
+	System commit
 %

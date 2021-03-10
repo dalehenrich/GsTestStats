@@ -1,5 +1,5 @@
 Class {
-	#name : 'GtsTestCaseSample',
+	#name : 'GsTestCaseSample',
 	#superclass : 'Object',
 	#instVars : [
 		'suite',
@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : 'instance creation' }
-GtsTestCaseSample class >> fromDictionary: sampleDict [
+GsTestCaseSample class >> fromDictionary: sampleDict [
 	| newTestCaseSample |
 	newTestCaseSample := self new.
 	sampleDict
@@ -20,27 +20,27 @@ GtsTestCaseSample class >> fromDictionary: sampleDict [
 ]
 
 { #category : 'instance creation' }
-GtsTestCaseSample class >> new [
+GsTestCaseSample class >> new [
 
 	^ self basicNew initialize
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> className [
+GsTestCaseSample >> className [
 	^ className
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> className: aString [
+GsTestCaseSample >> className: aString [
 	className := aString
 ]
 
 { #category : 'initialization' }
-GtsTestCaseSample >> initialize [
+GsTestCaseSample >> initialize [
 ]
 
 { #category : 'enumerating' }
-GtsTestCaseSample >> passed: passedBlock failed: failedBlock errored: erroredBlock [
+GsTestCaseSample >> passed: passedBlock failed: failedBlock errored: erroredBlock [
 	self status == #'passed'
 		ifTrue: [ ^ passedBlock cull: self ].
 	self status == #'errors'
@@ -50,42 +50,42 @@ GtsTestCaseSample >> passed: passedBlock failed: failedBlock errored: erroredBlo
 ]
 
 { #category : 'printing' }
-GtsTestCaseSample >> printOn: aStream [ 
+GsTestCaseSample >> printOn: aStream [ 
 	aStream nextPutAll: self className, ' debug: ', self selector printString
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> selector [
+GsTestCaseSample >> selector [
 	^ selector
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> selector: aString [
+GsTestCaseSample >> selector: aString [
 	selector := aString asSymbol
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> status [
+GsTestCaseSample >> status [
 	^ status
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> status: aString [
+GsTestCaseSample >> status: aString [
 	status := aString asSymbol
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> suite [
+GsTestCaseSample >> suite [
 	^ suite
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> suite: aGtsTestCaseSample [
-	suite := aGtsTestCaseSample
+GsTestCaseSample >> suite: aGsTestCaseSample [
+	suite := aGsTestCaseSample
 ]
 
 { #category : 'accessing' }
-GtsTestCaseSample >> testSummaryOn: strm [
+GsTestCaseSample >> testSummaryOn: strm [
 	| res |
 	strm
 		nextPutAll:

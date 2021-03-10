@@ -1,5 +1,5 @@
 Class {
-	#name : 'GtsTestSuiteSample',
+	#name : 'GsTestSuiteSample',
 	#superclass : 'Object',
 	#instVars : [
 		'suiteName',
@@ -19,7 +19,7 @@ Class {
 }
 
 { #category : 'comparison' }
-GtsTestSuiteSample class >> compareLatestTestCasesFor: aGsVersion branch: aBranch to: testSuiteSample on: aWriteStream [
+GsTestSuiteSample class >> compareLatestTestCasesFor: aGsVersion branch: aBranch to: testSuiteSample on: aWriteStream [
 	| latestTestSuiteSample |
 	latestTestSuiteSample := self
 		latestQuerySuiteSampleFor: aBranch
@@ -28,7 +28,7 @@ GtsTestSuiteSample class >> compareLatestTestCasesFor: aGsVersion branch: aBranc
 ]
 
 { #category : 'instance creation' }
-GtsTestSuiteSample class >> fromDictionary: sampleDict [
+GsTestSuiteSample class >> fromDictionary: sampleDict [
 
 	| newSuiteSample |
 	newSuiteSample := self new.
@@ -38,20 +38,20 @@ GtsTestSuiteSample class >> fromDictionary: sampleDict [
 ]
 
 { #category : 'instance creation' }
-GtsTestSuiteSample class >> fromJson: filePath [
+GsTestSuiteSample class >> fromJson: filePath [
 	| fileRef sampleDict |
 	fileRef := filePath asFileReference.
 	fileRef
 		readStreamDo: [ :fileStream | 
 			| bufferedStream |
 			bufferedStream := ZnBufferedReadStream on: fileStream.
-			bufferedStream sizeBuffer: fileRef size.
+			bufferedStream sizeBufferPatch9: fileRef size.
 			sampleDict := STON fromStream: bufferedStream ].
 	^ self fromDictionary: sampleDict
 ]
 
 { #category : 'instance creation' }
-GtsTestSuiteSample class >> fromJsonStream: aStream [
+GsTestSuiteSample class >> fromJsonStream: aStream [
 	| sample resultsSummary |
 	sample := self fromDictionary: (STON fromStream: aStream).
 	resultsSummary := sample resultsSummary.
@@ -64,7 +64,7 @@ GtsTestSuiteSample class >> fromJsonStream: aStream [
 ]
 
 { #category : 'example' }
-GtsTestSuiteSample class >> generateResultsDictionarFromTestSuite: suite testResult: res [
+GsTestSuiteSample class >> generateResultsDictionarFromTestSuite: suite testResult: res [
 	"results dictionary is suitable for writing out a JSON file"
 
 	| resultsDict resultCases |
@@ -118,18 +118,18 @@ GtsTestSuiteSample class >> generateResultsDictionarFromTestSuite: suite testRes
 ]
 
 { #category : 'example' }
-GtsTestSuiteSample class >> generateSampleFromTestSuite: suite testResult: res [
+GsTestSuiteSample class >> generateSampleFromTestSuite: suite testResult: res [
 	^ self
 		fromDictionary:
 			(self generateResultsDictionarFromTestSuite: suite testResult: res)
 ]
 
 { #category : 'queries' }
-GtsTestSuiteSample class >> latestQuerySuiteSampleFor: branch andVersion: gsVersion [
+GsTestSuiteSample class >> latestQuerySuiteSampleFor: branch andVersion: gsVersion [
 	"return the latest suite sample for the given <branch> and <gsVersion>. Return nil if no sample satisfies the query"
 
 	| query stream |
-	query := GtsTestSuiteSample querySuiteSamples: 'each.timeStamp < x'.
+	query := GsTestSuiteSample querySuiteSamples: 'each.timeStamp < x'.
 	query
 		bind: 'x'
 		to:
@@ -151,26 +151,26 @@ GtsTestSuiteSample class >> latestQuerySuiteSampleFor: branch andVersion: gsVers
 ]
 
 { #category : 'instance creation' }
-GtsTestSuiteSample class >> new [
+GsTestSuiteSample class >> new [
 
 	^ self basicNew initialize
 ]
 
 { #category : 'queries' }
-GtsTestSuiteSample class >> querySuiteSamples: queryString [
+GsTestSuiteSample class >> querySuiteSamples: queryString [
 	"
-		GtsTestSuiteSample suiteSamples.
+		GsTestSuiteSample suiteSamples.
 
-		(GtsTestSuiteSample querySuiteSamples: '(each.branch = ''issue_308'') & (each.gsVersion = ''3.5.0'')') asArray.
+		(GsTestSuiteSample querySuiteSamples: '(each.branch = ''issue_308'') & (each.gsVersion = ''3.5.0'')') asArray.
 	"
 
 	^ GsQuery fromString: queryString on: self suiteSamples
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample class >> resetSuiteSamples [
+GsTestSuiteSample class >> resetSuiteSamples [
 	"
-		GtsTestSuiteSample resetSuiteSamples
+		GsTestSuiteSample resetSuiteSamples
 	"
 
 	suiteSamples ifNotNil: [ suiteSamples removeAllIndexes ].
@@ -178,20 +178,20 @@ GtsTestSuiteSample class >> resetSuiteSamples [
 ]
 
 { #category : 'example' }
-GtsTestSuiteSample class >> saveSample: suiteSample [
+GsTestSuiteSample class >> saveSample: suiteSample [
 	self suiteSamples add: suiteSample
 ]
 
 { #category : 'example' }
-GtsTestSuiteSample class >> saveSampleFromTestSuite: suite testResult: res [
+GsTestSuiteSample class >> saveSampleFromTestSuite: suite testResult: res [
 	self saveSample: (self generateSampleFromTestSuite: suite testResult: res)
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample class >> suiteSamples [
+GsTestSuiteSample class >> suiteSamples [
 	"
-		GtsTestSuiteSample suiteSamples add: 
-			(GtsTestSuiteSample fromJson: '/home/dhenrich/rogue/_homes/rogue/_home/server/stones/test_rowan_dev_350/testResults.json')
+		GsTestSuiteSample suiteSamples add: 
+			(GsTestSuiteSample fromJson: '/home/dhenrich/rogue/_homes/rogue/_home/server/stones/test_rowan_dev_350/testResults.json')
 	"
 
 	^ suiteSamples
@@ -202,7 +202,7 @@ GtsTestSuiteSample class >> suiteSamples [
 ]
 
 { #category : 'indexing' }
-GtsTestSuiteSample class >> suiteSamplesIndexSpec [
+GsTestSuiteSample class >> suiteSamplesIndexSpec [
 	| indexOptions |
 	indexOptions := GsIndexOptions default + GsIndexOptions reducedConflict.
 	^ GsIndexSpec new
@@ -216,7 +216,7 @@ GtsTestSuiteSample class >> suiteSamplesIndexSpec [
 ]
 
 { #category : 'example' }
-GtsTestSuiteSample class >> summarizeTestResultsForSuite: suite testResults: res on: strm [
+GsTestSuiteSample class >> summarizeTestResultsForSuite: suite testResults: res on: strm [
 	strm
 		nextPutAll:
 				suite name , ' for GemStone ' , (System gemVersionAt: #'gsVersion') printString;
@@ -248,7 +248,7 @@ GtsTestSuiteSample class >> summarizeTestResultsForSuite: suite testResults: res
 ]
 
 { #category : 'comparison' }
-GtsTestSuiteSample >> _testCaseSampleMaps [
+GsTestSuiteSample >> _testCaseSampleMaps [
 	| pass fail error |
 	pass := Dictionary new.
 	fail := Dictionary new.
@@ -269,27 +269,27 @@ GtsTestSuiteSample >> _testCaseSampleMaps [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> branch [
+GsTestSuiteSample >> branch [
 	^ branch
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> branch: aString [
+GsTestSuiteSample >> branch: aString [
 	branch := aString
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> commitSha [
+GsTestSuiteSample >> commitSha [
 	^ commitSha
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> commitSha: aString [
+GsTestSuiteSample >> commitSha: aString [
 	commitSha := aString
 ]
 
 { #category : 'comparison' }
-GtsTestSuiteSample >> compareSelectorsIn: myDict for: theClassName against: theirDict status: status theirSample: theirSuiteSample on: aWriteStream [
+GsTestSuiteSample >> compareSelectorsIn: myDict for: theClassName against: theirDict status: status theirSample: theirSuiteSample on: aWriteStream [
 	| mySortedSelectors theirSortedSelectors mySelectorIndex theirSelectorIndex mySelectorsSize theirSelectorsSize symbol illegalSelector formerStatusIndicator |
 	formerStatusIndicator := Dictionary new
 		at: #'passed' put: 'P';
@@ -371,7 +371,7 @@ GtsTestSuiteSample >> compareSelectorsIn: myDict for: theClassName against: thei
 ]
 
 { #category : 'comparison' }
-GtsTestSuiteSample >> compareTo: testSuiteSample on: aWriteStream [
+GsTestSuiteSample >> compareTo: testSuiteSample on: aWriteStream [
 	"answer the differences for passed, errors, and failures between the receiver and <testSuiteSample>"
 
 	| mySampleMaps theirSampleMaps labels noDiffs statusArray |
@@ -465,38 +465,38 @@ GtsTestSuiteSample >> compareTo: testSuiteSample on: aWriteStream [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> gsVersion [
+GsTestSuiteSample >> gsVersion [
 	^ gsVersion
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> gsVersion: aString [
+GsTestSuiteSample >> gsVersion: aString [
 	gsVersion := aString
 ]
 
 { #category : 'initialization' }
-GtsTestSuiteSample >> initialize [
+GsTestSuiteSample >> initialize [
 	branch := commitSha := ''
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> notes [
+GsTestSuiteSample >> notes [
 	^ notes
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> notes: aString [
+GsTestSuiteSample >> notes: aString [
 	notes := aString
 ]
 
 { #category : 'enumeration' }
-GtsTestSuiteSample >> passed: passedBlock failed: failedBlock errored: erroredBlock [
+GsTestSuiteSample >> passed: passedBlock failed: failedBlock errored: erroredBlock [
 	self testCases
 		do: [ :testCaseSample | testCaseSample passed: passedBlock failed: failedBlock errored: erroredBlock ]
 ]
 
 { #category : 'printing' }
-GtsTestSuiteSample >> printOn: aStream [ 
+GsTestSuiteSample >> printOn: aStream [ 
 	aStream
 		nextPutAll: self class name;
 		nextPut: $(;
@@ -505,27 +505,27 @@ GtsTestSuiteSample >> printOn: aStream [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> properties [
+GsTestSuiteSample >> properties [
 	^ properties
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> properties: aDictionary [
+GsTestSuiteSample >> properties: aDictionary [
 	properties := aDictionary
 ]
 
 { #category : 'queries' }
-GtsTestSuiteSample >> queryTestCases: queryString [
+GsTestSuiteSample >> queryTestCases: queryString [
 	"
 		status: #passed, #failure, #error
 
-		((GtsTestSuiteSample suiteSamples detect: [:each | true ]) 
+		((GsTestSuiteSample suiteSamples detect: [:each | true ]) 
 			queryTestCases: 'each.status == #passed' ) size
 
-		((GtsTestSuiteSample suiteSamples detect: [:each | true ]) 
+		((GsTestSuiteSample suiteSamples detect: [:each | true ]) 
 			queryTestCases: 'each.className = ''RwProjectTonelReaderWriterTest''' ) size
 
-		((GtsTestSuiteSample suiteSamples detect: [:each | true ]) 
+		((GsTestSuiteSample suiteSamples detect: [:each | true ]) 
 			queryTestCases: '(each.className = ''RwProjectTonelReaderWriterTest'') & (each.status ~~ #passed)' ) size
 
 	"
@@ -534,27 +534,27 @@ GtsTestSuiteSample >> queryTestCases: queryString [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> resultsSummary [
+GsTestSuiteSample >> resultsSummary [
 	^ resultsSummary
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> resultsSummary: aDictionary [
+GsTestSuiteSample >> resultsSummary: aDictionary [
 	resultsSummary := aDictionary
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> suiteName [
+GsTestSuiteSample >> suiteName [
 	^ suiteName
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> suiteName: aString [
+GsTestSuiteSample >> suiteName: aString [
 	suiteName := aString
 ]
 
 { #category : 'printing' }
-GtsTestSuiteSample >> suiteSummary [
+GsTestSuiteSample >> suiteSummary [
 	| strm |
 	strm := WriteStream on: String new.
 	self suiteSummaryOn: strm.
@@ -562,7 +562,7 @@ GtsTestSuiteSample >> suiteSummary [
 ]
 
 { #category : 'printing' }
-GtsTestSuiteSample >> suiteSummaryOn: strm [
+GsTestSuiteSample >> suiteSummaryOn: strm [
 	| passed failed errored |
 	self printOn: strm.
 	strm lf.
@@ -600,7 +600,7 @@ GtsTestSuiteSample >> suiteSummaryOn: strm [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> testCases [
+GsTestSuiteSample >> testCases [
 	^ testCases
 		ifNil: [ 
 			testCases := RcLowMaintenanceIdentityBag new.
@@ -609,17 +609,17 @@ GtsTestSuiteSample >> testCases [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> testCases: anArrayOfTestCaseSampleDictionaries [
+GsTestSuiteSample >> testCases: anArrayOfTestCaseSampleDictionaries [
 	anArrayOfTestCaseSampleDictionaries
 		do: [ :sampleDict | 
 			| testCaseSample |
-			testCaseSample := GtsTestCaseSample fromDictionary: sampleDict.
+			testCaseSample := GsTestCaseSample fromDictionary: sampleDict.
 			testCaseSample suite: self.
 			self testCases add: testCaseSample ]
 ]
 
 { #category : 'indexing' }
-GtsTestSuiteSample >> testCaseSampleIndexSpec [
+GsTestSuiteSample >> testCaseSampleIndexSpec [
 	| indexOptions |
 	indexOptions := GsIndexOptions default + GsIndexOptions reducedConflict.
 	^ GsIndexSpec new
@@ -630,12 +630,12 @@ GtsTestSuiteSample >> testCaseSampleIndexSpec [
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> timeStamp [
+GsTestSuiteSample >> timeStamp [
 	^ timeStamp
 ]
 
 { #category : 'accessing' }
-GtsTestSuiteSample >> timeStamp: aDateAndTimeOrString [
+GsTestSuiteSample >> timeStamp: aDateAndTimeOrString [
 	timeStamp := aDateAndTimeOrString isString
 		ifTrue: [ DateAndTime fromString: aDateAndTimeOrString ]
 		ifFalse: [ aDateAndTimeOrString ]
