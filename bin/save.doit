@@ -1,4 +1,8 @@
-#!/usr/bin/env superdoit_home
+#!/usr/bin/env superdoit_stone
+#
+# copy or link me to the bin directory of the stones where the stats will be
+# 	stored
+#
 options
 {
   SuperDoitRequiredCommandLineOption long: 'branch'.
@@ -8,7 +12,7 @@ options
 %
 usage
 -----
-USAGE $basename <stone-name> [--help | -h] [--debug | -D] \
+USAGE $basename [--help | -h] [--debug | -D] \
             --branch=<branch-name> <test-results-json-file>
 
 DESCRIPTION
@@ -17,8 +21,6 @@ DESCRIPTION
     not need to be specified.
 
 OPTIONS
-  <stone-name>               name of the stone in which this script will be 
-                               executed
   <test-results-json-file>   name of the .json file that contains the test results
       --branch=<branch-name> name of the branch to be associated with test results
                                in the <test-results-json-file>
@@ -26,11 +28,9 @@ OPTIONS
   -D, --debug                bring up a topaz debugger in the event of an error
 
 EXAMPLES
-  $basename gs_370 --help
-  $basename gs_370 -h
-  $basename gs_370 --debug --branch=masterV2.1 testResults.json
-  $basename gs_370 -D --branch=masterV2.1 testResults.json
-  $basename gs_370 --branch=masterV2.1 testResults.json
+  $basename -h
+  $basename -D --branch=masterV2.1 testResults.json
+  $basename --branch=masterV2.1 testResults.json
 -----
 %
 method

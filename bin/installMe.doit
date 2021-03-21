@@ -1,0 +1,12 @@
+#!/usr/bin/env superdoit_stone
+#
+# copy or link me to the bin directory of the stone where you want the project
+#		installed
+#
+doit
+(Rowan  
+	projectFromUrl: 'file:$stoneDir/git/GsTestStats/rowan/specs/GsTestStats.ston'
+	gitUrl: 'file:$stoneDir/git/GsTestStats')
+		load.
+System commit
+%

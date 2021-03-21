@@ -159,7 +159,7 @@ GsTestSuiteSample class >> new [
 { #category : 'queries' }
 GsTestSuiteSample class >> querySuiteSamples: queryString [
 	"
-		GsTestSuiteSample suiteSamples.
+		GsTestSuiteSample SuiteSamples.
 
 		(GsTestSuiteSample querySuiteSamples: '(each.branch = ''issue_308'') & (each.gsVersion = ''3.5.0'')') asArray.
 	"
@@ -173,7 +173,7 @@ GsTestSuiteSample class >> resetSuiteSamples [
 		GsTestSuiteSample resetSuiteSamples
 	"
 
-	SuiteSamples ifNotNil: [ suiteSamples removeAllIndexes ].
+	SuiteSamples ifNotNil: [ SuiteSamples removeAllIndexes ].
 	SuiteSamples := nil
 ]
 
