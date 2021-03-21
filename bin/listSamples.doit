@@ -1,0 +1,43 @@
+#!/usr/bin/env superdoit_stone
+#
+# copy or link me to the bin directory of the stones where the stats will be
+# 	stored
+#
+options
+{
+  SuperDoitRequiredCommandLineOption long: 'branch'.
+  SuperDoitCommandLineOption long: 'help' short: 'h'.
+  SuperDoitCommandLineOption long: 'debug' short: 'D'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] 
+
+DESCRIPTION
+  List print string for all samples
+
+OPTIONS
+  -D, --debug                bring up a topaz debugger in the event of an error
+
+EXAMPLES
+  $basename -h
+  $basename -D 
+-----
+%
+method
+getAndVerifyOptions
+		self getOpts: self optionSpecs.
+		self help ifTrue: [ ^ self usage ].
+%
+doit
+	[
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
+		(GsTestSuiteSample suiteSamples 
+			sortWithBlock: [:a :b | a timeStamp <= b timeStamp]) 
+				collect: [:each | each printString]
+	] on: Error do: [:ex | 
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
+%
