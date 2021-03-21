@@ -13,7 +13,7 @@ Class {
 		'commitSha'
 	],
 	#classVars : [
-		'suiteSamples'
+		'SuiteSamples'
 	],
 	#category : 'GsTestStats-Samples'
 }
@@ -173,8 +173,8 @@ GsTestSuiteSample class >> resetSuiteSamples [
 		GsTestSuiteSample resetSuiteSamples
 	"
 
-	suiteSamples ifNotNil: [ suiteSamples removeAllIndexes ].
-	suiteSamples := nil
+	SuiteSamples ifNotNil: [ suiteSamples removeAllIndexes ].
+	SuiteSamples := nil
 ]
 
 { #category : 'example' }
@@ -194,11 +194,11 @@ GsTestSuiteSample class >> suiteSamples [
 			(GsTestSuiteSample fromJson: '/home/dhenrich/rogue/_homes/rogue/_home/server/stones/test_rowan_dev_350/testResults.json')
 	"
 
-	^ suiteSamples
+	^ SuiteSamples
 		ifNil: [ 
-			suiteSamples := RcLowMaintenanceIdentityBag new.
-			self suiteSamplesIndexSpec createIndexesOn: suiteSamples.
-			suiteSamples ]
+			SuiteSamples := RcLowMaintenanceIdentityBag new.
+			self suiteSamplesIndexSpec createIndexesOn: SuiteSamples.
+			SuiteSamples ]
 ]
 
 { #category : 'indexing' }
