@@ -1,0 +1,41 @@
+#!/usr/bin/env superdoit_stone
+#
+#
+#
+options
+{
+  SuperDoitCommandLineOption long: 'help' short: 'h'.
+  SuperDoitCommandLineOption long: 'debug' short: 'D'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]
+
+DESCRIPTION
+
+OPTIONS
+  -h, --help                 display usage message
+  -D, --debug                bring up a topaz debugger in the event of an error
+
+EXAMPLES
+  $basename -h
+  $basename -D 
+  $basenam
+e
+-----
+%
+method
+getAndVerifyOptions
+		self getOpts: self optionSpecs.
+		self help ifTrue: [ ^ self usage ].
+%
+doit
+	[
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
+		^ true
+	] on: Error do: [:ex | 
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
+%
