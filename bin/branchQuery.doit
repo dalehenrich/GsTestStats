@@ -36,10 +36,14 @@ dateStringFrom: timeStamp
 	^ strm contents
 %
 method
+gemstoneVersions
+	^ (GsTestSuiteSample suiteSamples collect: [:sample | sample gsVersion ]) asSet
+%
+method
 latestQuerySuiteSampleFor: branch
 	| latest  |
-	latest := {}.
-	{'3.2.15' . '3.5.0' . '3.6.0' . '3.6.1' . '3.7.0'}
+	latest := { 'Summaries for ', branch }.
+	self gemstoneVersions
 		do: [:version |
 			(GsTestSuiteSample latestQuerySuiteSampleFor: branch andVersion: version)
 				ifNotNil: [:sample | 
