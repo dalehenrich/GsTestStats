@@ -247,6 +247,15 @@ GsTestSuiteSample class >> summarizeTestResultsForSuite: suite testResults: res 
 						lf ] ]
 ]
 
+{ #category : 'accessing' }
+GsTestSuiteSample >> _testCases: aCollectionOfTestCaseSamples [
+	"replace existing test cases with a new collection of test cases"
+
+	testCases := nil.
+	aCollectionOfTestCaseSamples
+		do: [ :testCaseSample | self testCases add: testCaseSample ]
+]
+
 { #category : 'comparison' }
 GsTestSuiteSample >> _testCaseSampleMaps [
 	| pass fail error |

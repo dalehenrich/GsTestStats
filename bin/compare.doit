@@ -3,7 +3,6 @@
 # copy or link me to the bin directory of the stones where the stats will be
 # 	stored
 #
-`
 options
 {
   SuperDoitRequiredCommandLineOption long: 'branch'.

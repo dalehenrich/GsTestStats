@@ -1,0 +1,70 @@
+#!/usr/bin/env superdoit_stone
+#
+# export the test stats db from the stLauncher based 3.5.0 db
+# 	- have to convert RcLowMaintenanceIdentityBag into Array, since
+# 		RcLowMaintenanceIdentityBag cannot be read in using STON
+#
+# NOT TESTED
+#
+options
+{
+  SuperDoitCommandLineOption long: 'help' short: 'h'.
+  SuperDoitCommandLineOption long: 'debug' short: 'D'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] <path-to-export-dir>
+
+DESCRIPTION
+  Write the test suite samples into separate STON files in the <path-to-export-dir>.
+  Note that the RcLowMaintenanceIdentityBags are converted to Arrays so that they
+  can be written by STON.
+
+  **NOT TESTED** ... transcribed from a couple of workspace scripts.
+
+OPTIONS
+  <path-to-export-dir>       name of directory where each test suite sample is to 
+                             be written.
+  -h, --help                 display usage message
+  -D, --debug                bring up a topaz debugger in the event of an error
+
+EXAMPLES
+  $basename -h
+  $basename -D ./STON
+  $basename ./STON
+-----
+%
+method: RcLowMaintenanceIdentityBag
+stonOn: stonWriter
+	self asArray stonOn: stonWriter
+%
+method
+getAndVerifyOptions
+		self getOpts: self optionSpecs.
+		self help ifTrue: [ ^ self usage ].
+		(self positionalArgs size < 1)
+			ifTrue: [ self error: 'Required positional argument (path to export directory) not provided' ].
+%
+method
+exportToDir: dirPath
+| resultsDir count |
+count := 0.
+resultsDir := dirPath asFileReference.
+(Rowan globalNamed: 'RwsTestSuiteSample') suiteSamples do: [:suite |
+	(resultsDir / count asString, 'ston') writeStreamDo: [:stream |
+		STON put: suite onStreamPretty: stream ].
+	count := count + 1].
+	^ count printString, ' samples'
+%
+doit
+	[
+		| suiteSample |
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
+		suiteSample := self _suiteSamplesFrom: self jsonFile.
+		^ self exportToDor: (self positionalArgs at: 1).
+	] on: Error do: [:ex | 
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
+%

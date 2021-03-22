@@ -1,0 +1,89 @@
+#!/usr/bin/env superdoit_stone
+#
+# import the test stats from directory create by exportTestSuiteSamples_350.doit.
+#
+# have to convert from Array back to RcLowMaintenanceIdentityBag, since
+# 		RcLowMaintenanceIdentityBag cannot be read in using STON
+#
+# NOT TESTED
+#
+options
+{
+  SuperDoitCommandLineOption long: 'help' short: 'h'.
+  SuperDoitCommandLineOption long: 'debug' short: 'D'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] <path-to-export-dir>
+
+DESCRIPTION
+  Clear the existing test suite samples, read the test suite samples files in 
+  the <path-to-export-dir> into the image and then convert the test case Arrays
+  back into RcLowMaintenanceIdentityBags.
+
+	**NOT TESTED** ... transcribed from a couple of workspace scripts.
+
+OPTIONS
+  <path-to-export-dir>       name of directory where each test suite sample is to 
+                             be written.
+  -h, --help                 display usage message
+  -D, --debug                bring up a topaz debugger in the event of an error
+
+EXAMPLES
+  $basename -h
+  $basename -D ./STON
+  $basename ./STON
+-----
+%
+method: RcLowMaintenanceIdentityBag
+stonOn: stonWriter
+	self asArray stonOn: stonWriter
+%
+method
+getAndVerifyOptions
+		self getOpts: self optionSpecs.
+		self help ifTrue: [ ^ self usage ].
+		(self positionalArgs size < 1)
+			ifTrue: [ self error: 'Required positional argument (path to export directory) not provided' ].
+%
+method
+importFromDir: dirPath
+| resultsDir count |
+count := 0.
+GsTestSuiteSample resetSuiteSamples.
+resultsDir := dirPath asFileReference.
+resultsDir files do: [:file |
+	file readStreamDo: [:stream |
+		| reader suiteSample |
+		reader := STON reader.
+		reader classes 
+			at: #RwsTestSuiteSample
+				put: GsTestSuiteSample;
+			at: #RwsTestCaseSample
+				put: GsTestCaseSample.
+		suiteSample := (reader on: stream contents readStream) next.
+		GsTestSuiteSample saveSample: suiteSample.
+		count := count + 1 ].
+	System commit].
+^ count printString, ' samples'
+%
+doit
+	[
+		| suiteSample importInfo|
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
+		suiteSample := self _suiteSamplesFrom: self jsonFile.
+		importInfo := self importFrom: (self positionalArgs at: 1).
+		GsTestSuiteSample suiteSamples do: [:suiteSample |
+			"convert test samples back into RcLowMaintenanceIdentityBags"
+			| ar |
+			ar := suiteSample testCases.
+			suiteSample _testCases: ar.
+			System commit.
+			].
+		^ importInfo
+	] on: Error do: [:ex | 
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
+%
