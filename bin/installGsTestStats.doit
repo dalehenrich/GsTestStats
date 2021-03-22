@@ -4,9 +4,10 @@
 #		installed
 #
 doit
+"expand the $stoneDir reference in gitUrl, because that env var is not in the netldi"
 (Rowan  
 	projectFromUrl: 'file:$stoneDir/git/GsTestStats/rowan/specs/GsTestStats.ston'
-	gitUrl: 'file:$stoneDir/git/GsTestStats')
+	gitUrl: 'file:', '$stoneDir/git/GsTestStats' asFileReference pathString)
 		load.
 System commit
 %

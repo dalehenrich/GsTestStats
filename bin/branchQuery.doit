@@ -1,0 +1,62 @@
+#!/usr/bin/env superdoit_stone
+#
+#
+#
+options
+{
+  SuperDoitRequiredCommandLineOption long: 'branch'.
+  SuperDoitCommandLineOption long: 'help' short: 'h'.
+  SuperDoitCommandLineOption long: 'debug' short: 'D'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] --branch=<branch-name>
+
+DESCRIPTION
+list the latest test results by gemstone version for the given branch
+ 
+
+OPTIONS
+      --branch=<branch-name> name of branch to run query against
+  -h, --help                 display usage message
+  -D, --debug                bring up a topaz debugger in the event of an error
+
+EXAMPLES
+  $basename -h
+  $basename -D 
+  $basename --branch=issue_660
+-----
+%
+method
+dateStringFrom: timeStamp
+	| strm |
+	strm := WriteStream on: String new.
+	timeStamp printDateFrom: timeStamp asFloatParts on: strm.
+	^ strm contents
+%
+method
+latestQuerySuiteSampleFor: branch
+	| latest  |
+	latest := {}.
+	{'3.2.15' . '3.5.0' . '3.6.0' . '3.6.1' . '3.7.0'}
+		do: [:version |
+			(GsTestSuiteSample latestQuerySuiteSampleFor: branch andVersion: version)
+				ifNotNil: [:sample | 
+					latest add: version, ' [', (self dateStringFrom: sample timeStamp) , '] --> ', (sample resultsSummary at: 'summary') ] ].
+	^ latest
+%
+method
+getAndVerifyOptions
+		self getOpts: self optionSpecs.
+		self help ifTrue: [ ^ self usage ].
+%
+doit
+	[
+    self getAndVerifyOptions == self noResult
+			ifTrue: [ ^ self noResult ].
+		^ self latestQuerySuiteSampleFor: self branch
+	] on: Error do: [:ex | 
+		self debug ifTrue: [ ex pass ].
+		self exit: ex description withStatus: 1 "does not return" ].
+%
