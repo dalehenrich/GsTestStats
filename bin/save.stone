@@ -13,7 +13,8 @@ options
 usage
 -----
 USAGE $basename [--help | -h] [--debug | -D] \
-            --branch=<branch-name> <test-results-json-file>
+      --branch=<branch-name> <test-results-json-file> \
+      [-- [<stone-name> [<topaz-command-line-args>] ] ]
 
 DESCRIPTION
   Add the given <test-results-json-file> for the given branch to the data base.
@@ -24,6 +25,11 @@ OPTIONS
   <test-results-json-file>   name of the .json file that contains the test results
       --branch=<branch-name> name of the branch to be associated with test results
                                in the <test-results-json-file>
+  <stone-name>               Name of the GsDevKit_home stone. <stone-name> argument
+                             may be skipped if the script is run in a GsDevKit_home
+                             stone directory (i.e., $GS_HOME/server/stones/<stone-name>
+  <topaz-command-line-args>  topaz options that should be passed to topaz when running
+                             running the script
   -h, --help                 display usage message
   -D, --debug                bring up a topaz debugger in the event of an error
 
@@ -31,6 +37,7 @@ EXAMPLES
   $basename -h
   $basename -D --branch=masterV2.1 testResults.json
   $basename --branch=masterV2.1 testResults.json
+  $basename --branch=masterV2.1 testResults.json -- rowan_test_stats_l
 -----
 %
 method
