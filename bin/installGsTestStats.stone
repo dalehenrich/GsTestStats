@@ -1,13 +1,40 @@
 #!/usr/bin/env superdoit_stone
 #
-# copy or link me to the bin directory of the stone where you want the project
-#		installed
+#	if superDoit project is not present in $ROWAN_PROJECTS_HOME. it will be cloned there
 #
+specs
+[
+	RwLoadSpecificationV2 {
+		#specName : 'SuperDoit',
+		#projectName : 'superDoit',
+		#gitUrl : 'git@github.com:dalehenrich/superDoit.git',
+		#revision : 'master',
+		#projectSpecFile : 'rowan/project.ston',
+		#componentNames : [
+			'SuperDoit'
+		],
+		#customConditionalAttributes : [
+			'rowan'
+		],
+		#comment : ''
+	},
+	RwLoadSpecificationV2 {
+		#specName : 'GsTestStats',
+		#projectName : 'GsTestStats',
+		#gitUrl : 'https://github.com/dalehenrich/GsTestStats',
+		#revision : 'master',
+		#projectSpecFile : 'rowan/project.ston',
+		#componentNames : [
+			'Samples'
+		],
+		#customConditionalAttributes : [
+		],
+		#comment : 'test results tracking'
+	}
+]
+%
 doit
-"expand the $stoneDir reference in gitUrl, because that env var is not in the netldi"
-(Rowan  
-	projectFromUrl: 'file:$stoneDir/git/GsTestStats/rowan/specs/GsTestStats.ston'
-	gitUrl: 'file:', '$stoneDir/git/GsTestStats' asFileReference pathString)
-		load.
-System commit
+self preDoitSpecLoad.
+System commit.
+'GsTestStats installed'
 %
