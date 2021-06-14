@@ -351,7 +351,7 @@ GsTestSuiteSample >> compareSelectorsIn: myDict for: theClassName against: their
 									"present in their test suite - different status"
 									symbol := ' +' , (formerStatusIndicator at: res first status) , '	' ].
 							aWriteStream
-								nextPutAll: symbol , theClassName , '>>' , mySelector;
+								nextPutAll: symbol , theClassName , ' debug: #' , mySelector;
 								lf.
 							mySelectorIndex := mySelectorIndex + 1 ]
 						ifFalse: [ 
@@ -372,7 +372,7 @@ GsTestSuiteSample >> compareSelectorsIn: myDict for: theClassName against: their
 														, theirSelector , ''')') asArray.
 											aWriteStream
 												nextPutAll:
-														' -' , (formerStatusIndicator at: res first status) , '	' , theClassName , '>>'
+														' -' , (formerStatusIndicator at: res first status) , '	' , theClassName , ' debug: #'
 																, theirSelector;
 												lf ] ].
 							theirSelectorIndex := theirSelectorIndex + 1 ] ] ].
