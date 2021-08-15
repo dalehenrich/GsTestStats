@@ -1,0 +1,361 @@
+#!/usr/bin/env superdoit_stone
+#
+# Standard options are always present unless customoptions section is used
+#{
+#  SuperDoitOptionalOptionWithNoArg long: 'help' short: 'h'.
+#  SuperDoitOptionalOptionWithNoArg long: 'debug' short: 'D'.
+#}
+#
+options
+{
+  SuperDoitOptionalOptionWithRequiredArg long: 'jsonFile'.
+  SuperDoitOptionalOptionWithRequiredArg long: 'gsVer'.
+  SuperDoitOptionalOptionWithRequiredArg long: 'branch'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] \
+                branches --gsVer=<gemstone-version>
+                compare --jsonFile=<json-test-results> --gsVer=<gemstone-version> --branch=<git-branch>
+                export <directory-path>
+                import <directory-path>
+                lookup --gsVer=<gemstone-version> --branch=<git-branch>
+                remove <time-stamp> <count>
+                setsha <time-stamp> <sha>
+                store --jsonFile=<json-test-results> --branch=<git-branch>
+                timestamp --gsVer=<gemstone-version> --branch=<git-branch>
+                [-- [<stone-name> [<topaz-command-line-args>] ] ]
+
+DESCRIPTION
+  Write the Stone Version report for the current stone on stdout.
+
+COMMANDS
+  BRANCHES
+    List the branches for which test samples are recorded.
+  COMPARE
+    Compare the test sample in the given JSON file against the sample for the
+    given GemStone version and git branch.
+  LOOKUP
+    Lookup the latest sample for the given GemStone version and branch. Write
+    the sample to stdout as JSON.
+  REMOVE
+    Remove <count> samples that exactly match the <time-stamp> (DateAndTime 
+    printString)
+  SETSHA
+    Set the commit SHA of the sample to the given SHA.
+  STORE
+    Store the sample in the given JSON file in the data base for the given branch.
+  TIMESTAMP
+     Lookup the latest sample for the given GemStone version and branch. Write
+     the time stamp for the sample to stdout (useful for REMOVE and SETSHA
+     commands).
+
+OPTIONS
+  <stone-name>               Name of the GsDevKit_home stone. <stone-name> argument
+                             may be skipped if the script is run in a GsDevKit_home
+                             stone directory (i.e., $GS_HOME/server/stones/<stone-name>
+  <topaz-command-line-args>  topaz options that should be passed to topaz when running
+                             running the script
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+
+EXAMPLES
+  $basename --help
+  $basename -h
+  $basename -D <options>
+  $basename --debug <options>
+
+  $basename branches --gsVer=3.7.0 -- rowan_tests_stats_350
+  $basename compare --jsonFile=testResults.json --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350
+  $basename lookup --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350 > xxx.json
+  $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_tests_stats_350
+  $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_tests_stats_350
+  $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_tests_stats_350
+  $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350
+
+-----
+%
+method
+_commit
+	self isSolo
+		ifFalse: [
+			System commit 
+				ifFalse: [
+					self stderr nextPutAll: System detailedConflictReportString.
+					self error: 'Commit conflict updating suiteSamples' ] ].
+%
+method
+_debugIdenticalTimestamps
+	"check for identical timestamps -- DEBUGGING"
+	| query |
+	query := self _queryTimestamp: (self positionalArgs at: 2).
+	self stdout nextPutAll: query queryResult size printString, ' samples with identical timestamp'; lf.
+	^ self noResult
+%
+method
+_debugPrintAttributeGivenTimeStamp
+	| query |
+	query := self _queryTimestamp: (self positionalArgs at: 2).
+	query queryResult do: [:each | 
+		self stdout nextPutAll: (each perform: (self positionalArgs at: 3) asSymbol) printString; lf ].
+	^ self noResult
+%
+method
+_debugTimeStampsWithSha
+	"check for samples with given SHA -- DEBUGGING"
+	| query |
+	query := self _querySHA: (self positionalArgs at: 2).
+	self stdout nextPutAll: query queryResult size printString, ' samples with same SHA'; lf.
+	^ self noResult
+%
+method
+_debugTimeStampsWithShaSet
+	"check for samples with given SHA -- DEBUGGING"
+	self _TestSuiteSample_class suiteSamples do: [:sample |
+		sample commitSha isEmpty
+			ifFalse: [ self stdout nextPutAll: sample timeStamp printString; lf ] ].
+	^ self noResult
+%
+method
+_doXXX
+	"debug and experiments -- undocumented"
+	'x' isEmpty ifTrue: [ ^ self _debugTimeStampsWithShaSet ].
+	'x' isEmpty ifTrue: [ ^ self _debugTimeStampsWithSha ].
+	'x' isEmpty ifTrue: [ ^ self _debugPrintAttributeGivenTimeStamp ].
+	'x' isEmpty ifTrue: [ ^ self _debugIdenticalTimestamps ].
+	self stdout nextPutAll: 'No experiments enabled'; lf.
+	^ self noResult
+%
+method
+_exportSample: sample to: aStream
+	| jsonObject testCases |
+	testCases := Array new.
+	jsonObject := Dictionary new
+		at: 'branch' put: sample branch;
+		at: 'commitSha' put: sample commitSha;
+		at: 'gsVersion' put: sample gsVersion;
+		at: 'notes' put: sample notes;
+		at: 'properties' put: sample properties;
+		at: 'resultsSummary' put: sample resultsSummary;
+		at: 'suiteName' put: sample suiteName;
+		at: 'testCases' put: testCases;
+		at: 'timeStamp' put: sample timeStamp printString;
+		yourself.
+	sample testCases do: [:testCase |
+		testCases add: (Dictionary new
+			at: 'selector' put: testCase selector asString;
+			at: 'className' put: testCase className asString;
+			at: 'status' put: testCase status asString;
+			yourself) ].
+	STON put: jsonObject asJsonOnStreamPretty: aStream.
+%
+method
+_querySHA: sha
+	| query |
+	query := self _TestSuiteSample_class querySuiteSamples: 'each.commitSha = x'.
+	query
+		bind: 'x'
+		to: sha.
+	^query
+%
+method
+_queryTimestamp: timestampString
+	| timeStamp query |
+	timeStamp := DateAndTime fromString: timestampString.
+	query := self _TestSuiteSample_class querySuiteSamples: 'each.timeStamp = x'.
+	query
+		bind: 'x'
+		to: timeStamp.
+	^query
+%
+method
+_stoneDir
+	^ '$SUPERDOIT_STONE_DIR' asFileReference
+%
+method
+_testStatsError: message
+	self usage.
+	self stderr nextPutAll: '------------------------------'; lf.
+	self stderr nextPutAll: message; lf.
+	self stderr nextPutAll: '------------------------------'; lf.
+	^ self exitWithStatus: 1 
+%
+method
+_TestCaseSample_class
+	"Rowan is expected to be present ... in the 3.5.0 stone we're using 
+		RwsTestCaseSample. In later versons 3.7 or 3.6 we'll use 
+		GsTestCaseSample"
+
+	^ (System gemVersionAt: 'gsRelease') = '3.5.0'
+		ifTrue: [ Rowan globalNamed: 'RwsTestCaseSample' ]
+		ifFalse: [ Rowan globalNamed: 'GsTestCaseSample' ]
+%
+method
+_TestSuiteSample_class
+	"Rowan is expected to be present ... in the 3.5.0 stone we're using 
+		RwsTestSuiteSample. In later versons 3.7 or 3.6 we'll use 
+		GsTestSuiteSample"
+
+	^ (System gemVersionAt: 'gsRelease') = '3.5.0'
+		ifTrue: [ Rowan globalNamed: 'RwsTestSuiteSample' ]
+		ifFalse: [ Rowan globalNamed: 'GsTestSuiteSample' ]
+%
+method
+doBranches
+	| branches query |
+	query := self _TestSuiteSample_class querySuiteSamples: 'each.gsVersion = x'.
+	query
+		bind: 'x'
+		to: self gsVer.
+	branches := Set new.
+	query do: [:sample | sample branch isEmpty ifFalse: [ branches add: sample branch ] ].
+	branches asArray sort do: [:each | self stdout nextPutAll: each; lf ].
+	^ self noResult
+%
+method
+doCompare
+	| sample  |
+	sample := self _TestSuiteSample_class fromJson: self _stoneDir / self jsonFile.
+	self _TestSuiteSample_class
+		compareLatestTestCasesFor: self gsVer
+		branch: self branch
+		to: sample 
+		on: self stdout.
+	^ self noResult
+%
+method
+doExport
+	| sampleJsonDir count |
+	self positionalArgs size = 2
+		ifFalse: [ ^ self _testStatsError: 'Missing positional argument: <directory-path>' ].
+	sampleJsonDir := (self positionalArgs at: 2) asFileReference.
+	count := 0.
+	self _TestSuiteSample_class suiteSamples do: [:sample |
+		(sampleJsonDir / count asString, 'ston') writeStreamDo: [:stream |
+			self _exportSample: sample to: stream ].
+		count := count + 1 ].
+	self stdout nextPutAll: count printString, ' samples'; lf.
+	^ self noResult
+%
+method
+doImport
+	| sampleJsonDir count |
+	self positionalArgs size = 2
+		ifFalse: [ ^ self _testStatsError: 'Missing positional argument: <directory-path>' ].
+	sampleJsonDir := (self positionalArgs at: 2) asFileReference.
+	count := 0.
+	self _TestSuiteSample_class resetSuiteSamples.
+	sampleJsonDir files do: [:file |
+		file readStreamDo: [:stream |
+			| reader suiteSample |
+			reader := STON reader.
+			reader classes 
+				at: #RwsTestSuiteSample
+					put: self _TestSuiteSample_class;
+				at: #RwsTestCaseSample
+					put: self _TestCaseSample_class.
+			suiteSample := (reader on: stream contents readStream) next.
+			self _TestSuiteSample_class saveSample: suiteSample.
+			count := count + 1 ].
+		System commit].
+	self stdout nextPutAll: count printString, ' samples'; lf.
+	self _TestSuiteSample_class suiteSamples do: [:suiteSample |
+			"convert test samples back into RcLowMaintenanceIdentityBags"
+			| ar |
+			ar := suiteSample testCases.
+			suiteSample _testCases: ar. "this method recreates the testCases collection"
+			System commit.
+			].
+	^ self noResult
+%
+method
+doLookup
+	| sample |
+	sample := self _TestSuiteSample_class
+		latestQuerySuiteSampleFor: self branch 
+		andVersion: self gsVer.
+	sample 
+		ifNil: [ 
+		^ self error: 'No sample found matching gsVer ', 
+				self gsVer printString, 
+				' and branch ', 
+				self branch printString ].
+	self _exportSample: sample to: self stdout.
+	^ self noResult
+%
+method
+doRemove
+	| query count limit |
+	self positionalArgs size = 3
+		ifFalse: [ ^ self _testStatsError: 'Missing positional arguments: <count> and <time-stamp>' ].
+	query := self _queryTimestamp: (self positionalArgs at: 2).
+	limit := (self positionalArgs at: 3) asInteger.
+	count := 0.
+	query do: [:each | 
+		count < limit 
+			ifTrue: [
+				count := count + 1.
+				self _TestSuiteSample_class suiteSamples remove: each ] ].
+	self _commit.
+	self stdout nextPutAll: 'Removed ', count printString, ' samples'; lf.
+	^ self noResult
+%
+method
+doSetSHA
+	| query result |
+	self positionalArgs size = 3
+		ifFalse: [ ^ self _testStatsError: 'Missing positional arguments: <time-stamp> and <sha>' ].
+	query := self _queryTimestamp: (self positionalArgs at: 2).
+	result := query queryResult.
+	result size = 0
+		ifTrue: [ ^ self _testStatsError: 'No samples found with the given time stamp' ].
+	result size > 1
+		ifTrue: [ ^ self _testStatsError: result size printString, ' samples found with the given time stamp' ].
+	result do: [:each | each commitSha: (self positionalArgs at: 3) ].
+	self _commit.
+	^ self noResult
+%
+method
+doStore
+	| sample |
+	sample := self _TestSuiteSample_class fromJson: self _stoneDir / self jsonFile.
+	self _TestSuiteSample_class suiteSamples add: sample.
+	self _commit.
+	^ self noResult
+%
+method
+doTimestamp
+	| sample |
+	sample := self _TestSuiteSample_class
+		latestQuerySuiteSampleFor: self branch 
+		andVersion: self gsVer.
+	sample 
+		ifNil: [ 
+		^ self error: 'No sample found matching gsVer ', 
+				self gsVer printString, 
+				' and branch ', 
+				self branch printString ].
+	self stdout nextPutAll: sample timeStamp printString; lf.
+	^ self noResult
+%
+doit
+	| command |
+	command := (self positionalArgs atOrNil: 1)
+		ifNotNil: [:arg | command := arg asLowercase ]
+		ifNil: [ ^ self _testStatsError: 'No command specified' ].
+	command = 'branches' ifTrue: [ ^ self doBranches ].
+	command = 'compare' ifTrue: [ ^ self doCompare ].
+	command = 'export' ifTrue: [ ^ self doExport ].
+	command = 'import' ifTrue: [ ^ self doImport ].
+	command = 'lookup' ifTrue: [ ^ self doLookup ].
+	command = 'remove' ifTrue: [ ^ self doRemove ].
+	command = 'setsha' ifTrue: [ ^ self doSetSHA ].
+	command = 'store' ifTrue: [ ^ self doStore ].
+	command = 'timestamp' ifTrue: [ ^ self doTimestamp ].
+	command = 'xxx' 
+		ifTrue: [ 
+			"undocumented -- used for testing and development"
+			^ self _doXXX ].
+	^ self _testStatsError: 'Unknown command ', command printString, ' specified'
+%
