@@ -45,7 +45,7 @@ GsTestSuiteSample class >> fromJson: filePath [
 		readStreamDo: [ :fileStream | 
 			| bufferedStream |
 			bufferedStream := ZnBufferedReadStream on: fileStream.
-			bufferedStream sizeBufferPatch9: fileRef size.
+			bufferedStream sizeBuffer: fileRef size.
 			sampleDict := STON fromStream: bufferedStream ].
 	^ self fromDictionary: sampleDict
 ]

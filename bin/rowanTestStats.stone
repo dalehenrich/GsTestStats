@@ -247,15 +247,11 @@ doImport
 	count := 0.
 	self _TestSuiteSample_class resetSuiteSamples.
 	sampleJsonDir files do: [:file |
-		file readStreamDo: [:stream |
-			| reader suiteSample |
-			reader := STON reader.
-			reader classes 
-				at: #RwsTestSuiteSample
-					put: self _TestSuiteSample_class;
-				at: #RwsTestCaseSample
-					put: self _TestCaseSample_class.
-			suiteSample := (reader on: stream contents readStream) next.
+		file readStreamDo: [:fileStream |
+			| stream suiteSample |
+			stream := ZnBufferedReadStream on: fileStream. "wrap with buffered stream to bypass https://github.com/GemTalk/FileSystemGs/issues/9"
+			stream sizeBuffer: file size.
+			suiteSample := self _TestSuiteSample_class fromJsonStream: stream.
 			self _TestSuiteSample_class saveSample: suiteSample.
 			count := count + 1 ].
 		System commit].
