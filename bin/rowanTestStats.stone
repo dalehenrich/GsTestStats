@@ -11,6 +11,7 @@ options
   SuperDoitOptionalOptionWithRequiredArg long: 'jsonFile'.
   SuperDoitOptionalOptionWithRequiredArg long: 'gsVer'.
   SuperDoitOptionalOptionWithRequiredArg long: 'branch'.
+  SuperDoitOptionalOptionWithRequiredArg long: 'timeStamp'.
 }
 %
 usage
@@ -20,7 +21,8 @@ USAGE $basename [--help | -h] [--debug | -D] \
                 compare --jsonFile=<json-test-results> --gsVer=<gemstone-version> --branch=<git-branch>
                 export <directory-path>
                 import <directory-path>
-                lookup --gsVer=<gemstone-version> --branch=<git-branch>
+                lookup --gsVer=<gemstone-version> --branch=<git-branch> 
+                lookup --timeStamp=<timestamp> 
                 remove <time-stamp> <count>
                 setsha <time-stamp> <sha>
                 store --jsonFile=<json-test-results> --branch=<git-branch>
@@ -37,8 +39,8 @@ COMMANDS
     Compare the test sample in the given JSON file against the sample for the
     given GemStone version and git branch.
   LOOKUP
-    Lookup the latest sample for the given GemStone version and branch. Write
-    the sample to stdout as JSON.
+    Lookup the latest sample for the given GemStone version and branch OR given
+    timeStamp. Write the sample to stdout as JSON.
   REMOVE
     Remove <count> samples that exactly match the <time-stamp> (DateAndTime 
     printString)
@@ -48,7 +50,7 @@ COMMANDS
     Store the sample in the given JSON file in the data base for the given branch.
   TIMESTAMP
      Lookup the latest sample for the given GemStone version and branch. Write
-     the time stamp for the sample to stdout (useful for REMOVE and SETSHA
+     the time stamp for the sample to stdout (useful for LOOKUP, REMOVE and SETSHA
      commands).
 
 OPTIONS
@@ -69,6 +71,7 @@ EXAMPLES
   $basename branches --gsVer=3.7.0 -- rowan_tests_stats_350
   $basename compare --jsonFile=testResults.json --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350
   $basename lookup --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350 > xxx.json
+  $basename lookup --timeStamp="2021-06-30T09:35:12.16632997989655-07:00" -- rowan_tests_stats_350 > xxx.json
   $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_tests_stats_350
   $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_tests_stats_350
   $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_tests_stats_350
@@ -255,7 +258,7 @@ doImport
 			self _TestSuiteSample_class saveSample: suiteSample.
 			count := count + 1 ].
 		System commit].
-	self stdout nextPutAll: count printString, ' samples'; lf.
+	self stdout nextPutAll: count printString, ' samples...'.
 	self _TestSuiteSample_class suiteSamples do: [:suiteSample |
 			"convert test samples back into RcLowMaintenanceIdentityBags"
 			| ar |
@@ -263,14 +266,21 @@ doImport
 			suiteSample _testCases: ar. "this method recreates the testCases collection"
 			System commit.
 			].
+	self stdout nextPutAll: 'IMPORTED'; lf.
 	^ self noResult
 %
 method
 doLookup
 	| sample |
-	sample := self _TestSuiteSample_class
-		latestQuerySuiteSampleFor: self branch 
-		andVersion: self gsVer.
+	sample := self timeStamp
+		ifNotNil: [:ts | 
+			(self _queryTimestamp: ts) 
+				detect: [:each | true ] 
+				ifNone: [ self error: 'No sample found matching timestamp ', ts printString ] ]
+		ifNil: [
+			self _TestSuiteSample_class
+				latestQuerySuiteSampleFor: self branch 
+				andVersion: self gsVer ].
 	sample 
 		ifNil: [ 
 		^ self error: 'No sample found matching gsVer ', 
