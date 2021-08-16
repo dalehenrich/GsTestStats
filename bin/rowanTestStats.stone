@@ -222,8 +222,11 @@ doBranches
 %
 method
 doCompare
-	| sample  |
-	sample := self _TestSuiteSample_class fromJson: self _currentDir/ self jsonFile.
+	| sample jsonFile |
+	jsonFile := self jsonFile.
+	jsonFile isRelative
+		ifTrue: [ jsonFile := self _currentDir / jsonFile ].
+	sample := self _TestSuiteSample_class fromJson: jsonFile.
 	self _TestSuiteSample_class
 		compareLatestTestCasesFor: self gsVer
 		branch: self branch
@@ -237,6 +240,8 @@ doExport
 	self positionalArgs size = 2
 		ifFalse: [ ^ self _testStatsError: 'Missing positional argument: <directory-path>' ].
 	sampleJsonDir := (self positionalArgs at: 2) asFileReference.
+	sampleJsonDir isRelative
+		ifTrue: [ sampleJsonDir := self _currentDir / sampleJsonDir ].
 	count := 0.
 	self _TestSuiteSample_class suiteSamples do: [:sample |
 		(sampleJsonDir / count asString, 'ston') writeStreamDo: [:stream |
@@ -251,6 +256,8 @@ doImport
 	self positionalArgs size = 2
 		ifFalse: [ ^ self _testStatsError: 'Missing positional argument: <directory-path>' ].
 	sampleJsonDir := (self positionalArgs at: 2) asFileReference.
+	sampleJsonDir isRelative
+		ifTrue: [ sampleJsonDir := self _currentDir / sampleJsonDir ].
 	count := 0.
 	self _TestSuiteSample_class resetSuiteSamples.
 	sampleJsonDir files do: [:file |
@@ -344,8 +351,11 @@ doSummary
 %
 method
 doStore
-	| sample |
-	sample := self _TestSuiteSample_class fromJson: self _currentDir/ self jsonFile.
+	| sample jsonFile |
+	jsonFile := self jsonFile.
+	jsonFile isRelative
+		ifTrue: [ jsonFile := self _currentDir / jsonFile ].
+	sample := self _TestSuiteSample_class fromJson: jsonFile.
 	self _TestSuiteSample_class suiteSamples add: sample.
 	self _commit.
 	^ self noResult
