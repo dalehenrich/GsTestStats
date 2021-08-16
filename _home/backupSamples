@@ -5,4 +5,4 @@ set -e
 
 rm -rf *.log *.out
 
-$GS_HOME/shared/repos/GsTestStats/bin/rowanTestStats.stone export "`pwd`/BACKUP_SAMPLES" -- $GEMSTONE_NAME
+$GS_HOME/shared/repos/GsTestStats/bin/rowanTestStats.stone export BACKUP_SAMPLES -- $GEMSTONE_NAME
