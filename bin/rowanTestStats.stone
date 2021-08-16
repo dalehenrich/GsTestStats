@@ -26,6 +26,7 @@ USAGE $basename [--help | -h] [--debug | -D] \
                 remove <time-stamp> <count>
                 setsha <time-stamp> <sha>
                 store --jsonFile=<json-test-results> --branch=<git-branch>
+                summary <time-stamp>
                 timestamp --gsVer=<gemstone-version> --branch=<git-branch>
                 [-- [<stone-name> [<topaz-command-line-args>] ] ]
 
@@ -48,6 +49,8 @@ COMMANDS
     Set the commit SHA of the sample to the given SHA.
   STORE
     Store the sample in the given JSON file in the data base for the given branch.
+  Summary
+    Write the results summary for the sample(s) with the fiven time stamp.
   TIMESTAMP
      Lookup the latest sample for the given GemStone version and branch. Write
      the time stamp for the sample to stdout (useful for LOOKUP, REMOVE and SETSHA
@@ -74,6 +77,7 @@ EXAMPLES
   $basename lookup --timeStamp="2021-06-30T09:35:12.16632997989655-07:00" -- rowan_tests_stats_350 > xxx.json
   $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_tests_stats_350
   $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_tests_stats_350
+  $basename summary "2021-06-30T09:35:12.16632997989655-07:00" -- rowan_tests_stats_350
   $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_tests_stats_350
   $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350
 
@@ -323,6 +327,22 @@ doSetSHA
 	^ self noResult
 %
 method
+doSummary
+	| query |
+	self positionalArgs size = 2
+		ifFalse: [ ^ self _testStatsError: 'Missing positional argument: <time-stamp>' ].
+	query := self _queryTimestamp: (self positionalArgs at: 2).
+	query do: [:sample | 
+		self stdout 
+			nextPutAll: '['.
+		sample timeStamp printLocalOn: self stdout.
+		self stdout
+			nextPutAll: ']'; lf;
+			tab; nextPutAll: sample suiteName; lf;
+			tab; nextPutAll: ((sample resultsSummary) at: #'summary'); lf ].
+	^ self noResult
+%
+method
 doStore
 	| sample |
 	sample := self _TestSuiteSample_class fromJson: self _stoneDir / self jsonFile.
@@ -357,6 +377,7 @@ doit
 	command = 'lookup' ifTrue: [ ^ self doLookup ].
 	command = 'remove' ifTrue: [ ^ self doRemove ].
 	command = 'setsha' ifTrue: [ ^ self doSetSHA ].
+	command = 'summary' ifTrue: [ ^ self doSummary ].
 	command = 'store' ifTrue: [ ^ self doStore ].
 	command = 'timestamp' ifTrue: [ ^ self doTimestamp ].
 	command = 'xxx' 

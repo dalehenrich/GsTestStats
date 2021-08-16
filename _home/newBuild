@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+. defStone.env
+
+vers=`awk 'NR==2{print $1; exit}' product/version.txt`
+
+rm -rf *.log *.out
+
+newExtent -s /export/gcm/where/gemstone64/releases/$vers/x86_64.Linux/fast/hidden/bin/extent0.rowan.dbf $GEMSTONE_NAME
+
+$GS_HOME/shared/repos/superDoit/examples/utility/install_rowan_project.stone file:$GS_HOME/shared/repos/GsTestStats/rowan/specs/GsTestStats.ston -- $GEMSTONE_NAME
+
+$GS_HOME/shared/repos/GsTestStats/bin/rowanTestStats.stone import "`pwd`/BACKUP_SAMPLES" -- $GEMSTONE_NAME

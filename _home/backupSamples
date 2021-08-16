@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+. defStone.env
+
+rm -rf *.log *.out
+
+$GS_HOME/shared/repos/GsTestStats/bin/rowanTestStats.stone export "`pwd`/BACKUP_SAMPLES" -- $GEMSTONE_NAME
