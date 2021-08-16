@@ -71,15 +71,15 @@ EXAMPLES
   $basename -D <options>
   $basename --debug <options>
 
-  $basename branches --gsVer=3.7.0 -- rowan_tests_stats_350
-  $basename compare --jsonFile=testResults.json --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350
-  $basename lookup --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350 > xxx.json
-  $basename lookup --timeStamp="2021-06-30T09:35:12.16632997989655-07:00" -- rowan_tests_stats_350 > xxx.json
-  $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_tests_stats_350
-  $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_tests_stats_350
-  $basename summary "2021-06-30T09:35:12.16632997989655-07:00" -- rowan_tests_stats_350
-  $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_tests_stats_350
-  $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_tests_stats_350
+  $basename branches --gsVer=3.7.0 -- rowan_test_stats_361
+  $basename compare --jsonFile=testResults.json --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361
+  $basename lookup --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361 > xxx.json
+  $basename lookup --timeStamp="2021-06-30T09:35:12.16632997989655-07:00" -- rowan_test_stats_361 > xxx.json
+  $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_test_stats_361
+  $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_test_stats_361
+  $basename summary "2021-06-30T09:35:12.16632997989655-07:00" -- rowan_test_stats_361
+  $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_test_stats_361
+  $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361
 
 -----
 %
@@ -177,8 +177,8 @@ _queryTimestamp: timestampString
 	^query
 %
 method
-_stoneDir
-	^ '$SUPERDOIT_STONE_DIR' asFileReference
+_currentDir
+	^ '$SUPERDOIT_CURRENT_DIR' asFileReference
 %
 method
 _testStatsError: message
@@ -223,7 +223,7 @@ doBranches
 method
 doCompare
 	| sample  |
-	sample := self _TestSuiteSample_class fromJson: self _stoneDir / self jsonFile.
+	sample := self _TestSuiteSample_class fromJson: self _currentDir/ self jsonFile.
 	self _TestSuiteSample_class
 		compareLatestTestCasesFor: self gsVer
 		branch: self branch
@@ -345,7 +345,7 @@ doSummary
 method
 doStore
 	| sample |
-	sample := self _TestSuiteSample_class fromJson: self _stoneDir / self jsonFile.
+	sample := self _TestSuiteSample_class fromJson: self _currentDir/ self jsonFile.
 	self _TestSuiteSample_class suiteSamples add: sample.
 	self _commit.
 	^ self noResult
