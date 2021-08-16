@@ -1,6 +1,9 @@
 #!/usr/bin/env superdoit_stone
 #
 #	if superDoit project is not present in $ROWAN_PROJECTS_HOME. it will be cloned there
+#	
+#	superDoit will install itself in a stone to run superDoit scripts, so the only remaining
+#	reason to explicitly load code is if you want to read superDoit code in image ...
 #
 specs
 [
