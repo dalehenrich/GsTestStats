@@ -22,6 +22,7 @@ USAGE $basename [--help | -h] [--debug | -D] \
                 export <directory-path>
                 import <directory-path>
                 lookup --gsVer=<gemstone-version> --branch=<git-branch> 
+                lookup --gsVer=<gemstone-version>
                 lookup --timeStamp=<timestamp> 
                 lookup
                 remove <time-stamp> <count>
