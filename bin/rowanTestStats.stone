@@ -41,20 +41,26 @@ COMMANDS
     given GemStone version and git branch.
   LOOKUP
     Lookup the latest sample for the given GemStone version and branch OR given
-    timeStamp. Write the sample to stdout as JSON.
+    timeStamp, and write the sample to stdout. With only a GemStone version,
+    write the latest sample for that version. With only a branch, write the
+    latest sample for that branch.  With no options, write the absolute latest
+    sample.
   REMOVE
     Remove <count> samples that exactly match the <time-stamp> (DateAndTime 
     printString)
   SETSHA
     Set the commit SHA of the sample to the given SHA.
   STORE
-    Store the sample in the given JSON file in the data base for the given branch.
-  Summary
-    Write the results summary for the sample(s) with the fiven time stamp.
+    Store the sample in the given JSON file in the data base for the given
+    branch. Write the time stamp of the sample to stdout.
+  SUMMARY
+    Write the results summary for the sample(s) with the given time stamp.
   TIMESTAMP
-     Lookup the latest sample for the given GemStone version and branch. Write
-     the time stamp for the sample to stdout (useful for LOOKUP, REMOVE and SETSHA
-     commands).
+    Lookup and write the time stamp for the latest sample for the given GemStone
+    version and branch. With only a GemStone version, write the time stamp of the
+    latest sample for that version. With only a branch, write the time stamp of
+    the latest sample for that branch.  With no options, write the time stamp
+    of the absolute latest sample.
 
 OPTIONS
   <stone-name>               Name of the GsDevKit_home stone. <stone-name> argument
@@ -73,12 +79,13 @@ EXAMPLES
 
   $basename branches --gsVer=3.7.0 -- rowan_test_stats_361
   $basename compare --jsonFile=testResults.json --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361
+  $basename lookup -- rowan_test_stats_361 > xxx.json
   $basename lookup --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361 > xxx.json
   $basename lookup --timeStamp="2021-06-30T09:35:12.16632997989655-07:00" -- rowan_test_stats_361 > xxx.json
   $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_test_stats_361
   $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_test_stats_361
-  $basename summary "2021-06-30T09:35:12.16632997989655-07:00" -- rowan_test_stats_361
   $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_test_stats_361
+  $basename summary "2021-06-30T09:35:12.16632997989655-07:00" -- rowan_test_stats_361
   $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361
 
 -----
@@ -158,13 +165,28 @@ _exportSample: sample to: aStream
 	STON put: jsonObject asJsonOnStreamPretty: aStream.
 %
 method
+_queryAbsoluteLatestSample
+	| query |
+	query := self _TestSuiteSample_class querySuiteSamples: 'each.timeStamp < x'.
+	query
+		bind: 'x'
+		to: (DateAndTime now
+				+
+					(Duration
+						days: 1
+						hours: 0
+						minutes: 0
+						seconds: 0)).
+	^ query
+%
+method
 _querySHA: sha
 	| query |
 	query := self _TestSuiteSample_class querySuiteSamples: 'each.commitSha = x'.
 	query
 		bind: 'x'
 		to: sha.
-	^query
+	^ query
 %
 method
 _queryTimestamp: timestampString
@@ -174,7 +196,7 @@ _queryTimestamp: timestampString
 	query
 		bind: 'x'
 		to: timeStamp.
-	^query
+	^ query
 %
 method
 _currentDir
@@ -223,7 +245,7 @@ doBranches
 method
 doCompare
 	| sample jsonFile |
-	jsonFile := self jsonFile.
+	jsonFile := self jsonFile asFileReference.
 	jsonFile isRelative
 		ifTrue: [ jsonFile := self _currentDir / jsonFile pathString ].
 	sample := self _TestSuiteSample_class fromJson: jsonFile.
@@ -283,21 +305,15 @@ doImport
 method
 doLookup
 	| sample |
-	sample := self timeStamp
-		ifNotNil: [:ts | 
-			(self _queryTimestamp: ts) 
-				detect: [:each | true ] 
-				ifNone: [ self error: 'No sample found matching timestamp ', ts printString ] ]
-		ifNil: [
-			self _TestSuiteSample_class
-				latestQuerySuiteSampleFor: self branch 
-				andVersion: self gsVer ].
+	sample := self _TestSuiteSample_class
+		latestQuerySuiteSampleFor: self branch 
+		andVersion: self gsVer.
 	sample 
 		ifNil: [ 
 		^ self error: 'No sample found matching gsVer ', 
 				self gsVer printString, 
 				' and branch ', 
-				self branch printString ].
+				self branch printString, ' or timestamp ', self timestamp printString ].
 	self _exportSample: sample to: self stdout.
 	^ self noResult
 %
@@ -334,6 +350,18 @@ doSetSHA
 	^ self noResult
 %
 method
+doStore
+	| sample jsonFile |
+	jsonFile := self jsonFile asFileReference.
+	jsonFile isRelative
+		ifTrue: [ jsonFile := self _currentDir / jsonFile pathString ].
+	sample := self _TestSuiteSample_class fromJson: jsonFile.
+	self _TestSuiteSample_class suiteSamples add: sample.
+	self _commit.
+	self stdout nextPutAll: sample timeStamp printString; lf.
+	^ self noResult
+%
+method
 doSummary
 	| query |
 	self positionalArgs size = 2
@@ -345,19 +373,9 @@ doSummary
 		sample timeStamp printLocalOn: self stdout.
 		self stdout
 			nextPutAll: ']'; lf;
+			tab; nextPutAll: 'gemstone ', sample gsVersion; nextPutAll: ' branch: ', sample branch; lf;
 			tab; nextPutAll: sample suiteName; lf;
 			tab; nextPutAll: ((sample resultsSummary) at: #'summary'); lf ].
-	^ self noResult
-%
-method
-doStore
-	| sample jsonFile |
-	jsonFile := self jsonFile.
-	jsonFile isRelative
-		ifTrue: [ jsonFile := self _currentDir / jsonFile pathString ].
-	sample := self _TestSuiteSample_class fromJson: jsonFile.
-	self _TestSuiteSample_class suiteSamples add: sample.
-	self _commit.
 	^ self noResult
 %
 method
@@ -387,8 +405,8 @@ doit
 	command = 'lookup' ifTrue: [ ^ self doLookup ].
 	command = 'remove' ifTrue: [ ^ self doRemove ].
 	command = 'setsha' ifTrue: [ ^ self doSetSHA ].
-	command = 'summary' ifTrue: [ ^ self doSummary ].
 	command = 'store' ifTrue: [ ^ self doStore ].
+	command = 'summary' ifTrue: [ ^ self doSummary ].
 	command = 'timestamp' ifTrue: [ ^ self doTimestamp ].
 	command = 'xxx' 
 		ifTrue: [ 

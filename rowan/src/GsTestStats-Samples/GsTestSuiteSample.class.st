@@ -126,7 +126,12 @@ GsTestSuiteSample class >> generateSampleFromTestSuite: suite testResult: res [
 
 { #category : 'queries' }
 GsTestSuiteSample class >> latestQuerySuiteSampleFor: branch andVersion: gsVersion [
-	"return the latest suite sample for the given <branch> and <gsVersion>. Return nil if no sample satisfies the query"
+	"return the latest suite sample for the given <branch> and <gsVersion>. 
+	With only a GemStone version,
+		write the latest sample for that version. With only a branch, write the
+		latest sample for that branch.  With no options, write the absolute latest
+		sample.
+	Return nil if no sample satisfies the query"
 
 	| query stream |
 	query := GsTestSuiteSample querySuiteSamples: 'each.timeStamp < x'.
@@ -145,8 +150,21 @@ GsTestSuiteSample class >> latestQuerySuiteSampleFor: branch andVersion: gsVersi
 		whileFalse: [ 
 			| sample |
 			sample := stream next.
-			(sample branch = branch and: [ sample gsVersion = gsVersion ])
-				ifTrue: [ ^ sample ] ].
+			(branch isNil and: [ gsVersion isNil ])
+				ifTrue: [ ^ sample ]
+				ifFalse: [ 
+					branch
+						ifNil: [ 
+							sample gsVersion = gsVersion
+								ifTrue: [ ^ sample ] ]
+						ifNotNil: [ 
+							gsVersion
+								ifNil: [ 
+									sample branch = branch
+										ifTrue: [ ^ sample ] ]
+								ifNotNil: [ 
+									(sample branch = branch and: [ sample gsVersion = gsVersion ])
+										ifTrue: [ ^ sample ] ] ] ] ].
 	^ nil
 ]
 
