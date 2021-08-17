@@ -32,7 +32,8 @@ USAGE $basename [--help | -h] [--debug | -D] \
                 timestamp
                 timestamp --gsVer=<gemstone-version>
                 timestamp --branch=<git-branch>
-                timestamp --gsVer=<gemstone-version> --branch=<git-branch>
+                timestamp --gsVer=<gemstone-version> --branch=<git-branch
+                versions
                 [-- [<stone-name> [<topaz-command-line-args>] ] ]
 
 DESCRIPTION
@@ -66,6 +67,8 @@ COMMANDS
     latest sample for that version. With only a branch, write the time stamp of
     the latest sample for that branch.  With no options, write the time stamp
     of the absolute latest sample.
+  VERSIONS
+    List the gemstone version for whcih test samples are recorded
 
 OPTIONS
   <stone-name>               Name of the GsDevKit_home stone. <stone-name> argument
@@ -97,6 +100,7 @@ EXAMPLES
   $basename timestamp --gsVer=3.7.0 -- rowan_test_stats_361
   $basename timestamp --branch=issue_724 -- rowan_test_stats_361
   $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361
+  $basename versions -- rowan_test_stats_361
 #
 # get latest sample on branch issue_724 
 # export the give sample to xxx.json file
@@ -428,6 +432,12 @@ doTimestamp
 	self stdout nextPutAll: sample timeStamp printString; lf.
 	^ self noResult
 %
+method
+doVersions
+	(self _TestSuiteSample_class suiteSamples collect: [:each | each gsVersion ]) asSet asArray sort 
+		do: [:each | self stdout nextPutAll: each; lf ].
+	^ self noResult
+%
 doit
 	| command |
 	command := (self positionalArgs atOrNil: 1)
@@ -443,6 +453,7 @@ doit
 	command = 'store' ifTrue: [ ^ self doStore ].
 	command = 'summary' ifTrue: [ ^ self doSummary ].
 	command = 'timestamp' ifTrue: [ ^ self doTimestamp ].
+	command = 'versions' ifTrue: [ ^ self doVersions ].
 	command = 'xxx' 
 		ifTrue: [ 
 			"undocumented -- used for testing and development"
