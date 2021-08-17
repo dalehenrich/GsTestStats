@@ -91,12 +91,20 @@ EXAMPLES
   $basename lookup --timeStamp="2021-06-30T09:35:12.16632997989655-07:00" --jsonFile=xxx.json -- rowan_test_stats_361
   $basename remove "2021-06-30T09:35:12.16632997989655-07:00" 1 -- rowan_test_stats_361
   $basename setsha "2020-01-23T15:37:11.87647891044617-08:00" 42f863d5 -- rowan_test_stats_361
-  $basename store --jsonFile=testResults.json --gsVer=3.7.0 -- rowan_test_stats_361
+  $basename store --jsonFile=testResults.json --branch=masterV2.2 -- rowan_test_stats_361
   $basename summary "2021-06-30T09:35:12.16632997989655-07:00" -- rowan_test_stats_361
   $basename timestamp -- rowan_test_stats_361
   $basename timestamp --gsVer=3.7.0 -- rowan_test_stats_361
   $basename timestamp --branch=issue_724 -- rowan_test_stats_361
   $basename timestamp --gsVer=3.7.0 --branch=issue_724 -- rowan_test_stats_361
+#
+# get latest sample on branch issue_724 
+# export the give sample to xxx.json file
+# store the sample in xxx.json db associated with branch candidateV3.0
+#
+  $basename timestamp --branch=issue_724 -- rowan_test_stats_361 
+  $basename lookup --timeStamp=2021-06-30T09:35:12.166330-07:00 --jsonFile=xxx.json -- rowan_test_stats_361
+  $basename store --jsonFile=xxx.json --branch=candidateV3.0 -- rowan_test_stats_361
 -----
 %
 method
