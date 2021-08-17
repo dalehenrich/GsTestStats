@@ -33,7 +33,7 @@ GsTestSuiteSample class >> fromDictionary: sampleDict [
 	| newSuiteSample |
 	newSuiteSample := self new.
 	sampleDict keysAndValuesDo: [:key :value |
-		newSuiteSample perform: (key, ':') with: value ].
+		newSuiteSample perform: (key, ':') asSymbol with: value ].
 	^ newSuiteSample
 ]
 
@@ -57,9 +57,11 @@ GsTestSuiteSample class >> fromJsonStream: aStream [
 	resultsSummary := sample resultsSummary.
 	resultsSummary copy
 		keysAndValuesDo: [ :key :value | 
-			"repair results summary for now"
-			resultsSummary at: key asSymbol put: value.
-			resultsSummary removeKey: key asString ifAbsent: [  ] ].
+			key _isSymbol
+				ifTrue: [ 
+					"repair results summary for now"
+					resultsSummary at: key asString put: value.
+					resultsSummary removeKey: key asSymbol ifAbsent: [  ] ] ].
 	^ sample
 ]
 
