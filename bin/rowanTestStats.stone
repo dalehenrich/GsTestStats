@@ -273,6 +273,8 @@ doCompare
 	jsonFile := self jsonFile asFileReference.
 	jsonFile isRelative
 		ifTrue: [ jsonFile := self _currentDir / jsonFile pathString ].
+	jsonFile exists ifFalse: [ self error: 'The file ', jsonFile pathString printString, ' does not exist.' ].
+
 	sample := self _TestSuiteSample_class fromJson: jsonFile.
 	self _TestSuiteSample_class
 		compareLatestTestCasesFor: self gsVer
@@ -389,6 +391,7 @@ doStore
 	jsonFile := self jsonFile asFileReference.
 	jsonFile isRelative
 		ifTrue: [ jsonFile := self _currentDir / jsonFile pathString ].
+	jsonFile exists ifFalse: [ self error: 'The file ', jsonFile pathString printString, ' does not exist.' ].
 	sample := self _TestSuiteSample_class fromJson: jsonFile.
 	self branch
 		ifNil: [ ^ self  _testStatsError: 'Missing required option --branch' ].
