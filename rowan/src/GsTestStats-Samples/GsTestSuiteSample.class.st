@@ -24,6 +24,12 @@ GsTestSuiteSample class >> compareLatestTestCasesFor: aGsVersion branch: aBranch
 	latestTestSuiteSample := self
 		latestQuerySuiteSampleFor: aBranch
 		andVersion: aGsVersion.
+	latestTestSuiteSample
+		ifNil: [ 
+			self
+				error:
+					'No suite sample found for GemStone ' , aGsVersion printString , '; branch '
+						, aBranch printString ].
 	^ testSuiteSample compareTo: latestTestSuiteSample on: aWriteStream
 ]
 

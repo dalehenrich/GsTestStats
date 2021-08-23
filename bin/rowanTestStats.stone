@@ -257,6 +257,7 @@ _TestSuiteSample_class
 method
 doBranches
 	| branches query |
+	self gsVer ifNil: [ self error: 'Required option ''--gsVer'' not specified' ].
 	query := self _TestSuiteSample_class querySuiteSamples: 'each.gsVersion = x'.
 	query
 		bind: 'x'
@@ -342,6 +343,7 @@ doLookup
 				self gsVer printString, 
 				' and branch ', 
 				self branch printString, ' or timestamp ', self timestamp printString ].
+	self jsonFile ifNil: [ self error: 'Required option ''--jsonFile'' not specified' ].
 	jsonFile := self jsonFile asFileReference.
 	jsonFile isRelative
 		ifTrue: [ jsonFile := self _currentDir / jsonFile pathString ].
