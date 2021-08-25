@@ -26,6 +26,7 @@ USAGE $basename [--help | -h] [--debug | -D] \
                 lookup --timeStamp=<timestamp> 
                 lookup
                 remove <time-stamp> <count>
+                results <time-stamp>
                 setsha <time-stamp> <sha>
                 store --jsonFile=<json-test-results> --branch=<git-branch>
                 summary <time-stamp>
@@ -54,6 +55,8 @@ COMMANDS
   REMOVE
     Remove <count> samples that exactly match the <time-stamp> (DateAndTime 
     printString)
+  RESULTS
+    Print the tests results with the given time stamp on stdout.
   SETSHA
     Set the commit SHA of the sample to the given SHA.
   STORE
@@ -419,6 +422,21 @@ doSummary
 	^ self noResult
 %
 method
+doTestResults
+	| query |
+	self positionalArgs size = 2
+		ifFalse: [ ^ self _testStatsError: 'Missing positional argument: <time-stamp>' ].
+	query := self _queryTimestamp: (self positionalArgs at: 2).
+	query do: [:sample | 
+		self stdout 
+			nextPutAll: '['.
+		sample timeStamp printLocalOn: self stdout.
+		self stdout
+			nextPutAll: ']'; lf.
+		sample suiteSummaryOn: self stdout ].
+	^ self noResult
+%
+method
 doTimestamp
 	| sample |
 	sample := self timeStamp
@@ -454,6 +472,7 @@ doit
 	command = 'import' ifTrue: [ ^ self doImport ].
 	command = 'lookup' ifTrue: [ ^ self doLookup ].
 	command = 'remove' ifTrue: [ ^ self doRemove ].
+	command = 'results' ifTrue: [ ^ self doTestResults ].
 	command = 'setsha' ifTrue: [ ^ self doSetSHA ].
 	command = 'store' ifTrue: [ ^ self doStore ].
 	command = 'summary' ifTrue: [ ^ self doSummary ].
