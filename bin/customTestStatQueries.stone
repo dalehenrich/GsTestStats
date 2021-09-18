@@ -44,7 +44,7 @@ doit
 			sample := stream next.
 			testCases := sample testCases.
 			query := GsQuery fromString: '(each.status == #passed) & (each.className = ''RwRowanSample9Test'') & (each.selector = #testSwitchRepository_591)' on: testCases.
-			xquery := GsQuery fromString: '                           (each.className = ''RwRowanSample9Test'') & (each.selector = #testSwitchRepository_591)' on: testCases.
+			query := GsQuery fromString: '                           (each.className = ''RwRowanSample9Test'') & (each.selector = #testSwitchRepository_591)' on: testCases.
 			result := query queryResult asArray.
 			result isEmpty 
 				ifFalse: [ 
@@ -56,6 +56,6 @@ doit
 						tab; nextPutAll: sample branch; lf;
 						tab; nextPutAll: sample commitSha; lf;
 						yourself.
-					count > 5 ifTrue: [ self halt ] ] ].
+					count > 40 ifTrue: [ self halt ] ] ].
 	^ self noResult
 %
