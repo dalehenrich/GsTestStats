@@ -7,7 +7,7 @@ Class {
 { #category : 'testing' }
 SCITestReporterXMLTest >> testReportFailure [
 	| runner reporter stream result expectedTests index |
-	runner := SmalltalkCI testRunnerClass runSpec: (
+	runner := GsTestStatsCI testRunnerClass runSpec: (
 		(Rowan globalNamed: 'SCIDummySpec')
 			named: 'XML-testReportFailure'
 			forClass: (Rowan globalNamed: 'SCIExcludedTests')).
@@ -38,13 +38,12 @@ SCITestReporterXMLTest >> testReportFailure [
 	self assert: index > 0.
 	index := result findString: '</testsuite>' startingAt: index.
 	self assert: index > 0
-
 ]
 
 { #category : 'testing' }
 SCITestReporterXMLTest >> testReportSuccess [
 	| runner reporter stream result expectedTests index |
-	runner := SmalltalkCI testRunnerClass runSpec: (
+	runner := GsTestStatsCI testRunnerClass runSpec: (
 		(Rowan globalNamed: 'SCIDummySpec')
 			named: 'XML-testReportSuccess'
 			forClass: (Rowan globalNamed: 'SmalltalkCITest')).
@@ -69,5 +68,4 @@ SCITestReporterXMLTest >> testReportSuccess [
 	self assert: index > 0.
 	index := result findString: '</testsuite>' startingAt: index.
 	self assert: index > 0
-
 ]

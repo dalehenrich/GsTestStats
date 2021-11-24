@@ -5,6 +5,7 @@ RwSimpleProjectLoadComponentV2 {
 	#componentNames : [ ],
 	#packageNames : [
 		'GsTestStats-Samples',
+		'GsTestStats-TestSupport',
 		'GsTestStats-SmalltalkCI-TestSupport',
 		'GsTestStats-SmalltalkCI-TestSupport-Tests'
 	],

@@ -7,26 +7,26 @@ Class {
 { #category : 'testing' }
 SCITestRunnerTest >> testRunClasses [
 	| runner |
-	runner := SmalltalkCI testRunnerClass runClasses: {Rowan globalNamed: 'SmalltalkCITest'}.
+	runner := GsTestStatsCI testRunnerClass runClasses: {Rowan globalNamed: 'SmalltalkCITest'}.
 	self assert: runner isSuccessful.
-	runner := SmalltalkCI testRunnerClass runClasses: {Rowan globalNamed: 'SCIExcludedTests'}.
+	runner := GsTestStatsCI testRunnerClass runClasses: {Rowan globalNamed: 'SCIExcludedTests'}.
 	self deny: runner isSuccessful.
 	self
-		should: [ SmalltalkCI testRunnerClass runClasses: {SmalltalkCI} ]
+		should: [ GsTestStatsCI testRunnerClass runClasses: {GsTestStatsCI} ]
 		raise: Error
 ]
 
 { #category : 'testing' }
 SCITestRunnerTest >> testRunSpecNamed [
 	| runner |
-	runner := SmalltalkCI testRunnerClass
+	runner := GsTestStatsCI testRunnerClass
 		runSpec: ((Rowan globalNamed: 'SCIDummySpec') forClass: (Rowan globalNamed: 'SmalltalkCITest')).
 	self assert: runner isSuccessful.
-	runner := SmalltalkCI testRunnerClass
+	runner := GsTestStatsCI testRunnerClass
 		runSpec: ((Rowan globalNamed: 'SCIDummySpec') forClass: (Rowan globalNamed: 'SCIExcludedTests')).
 	self deny: runner isSuccessful.
-	runner := SmalltalkCI testRunnerClass
-		runSpec: ((Rowan globalNamed: 'SCIDummySpec') forClass: SmalltalkCI).
+	runner := GsTestStatsCI testRunnerClass
+		runSpec: ((Rowan globalNamed: 'SCIDummySpec') forClass: GsTestStatsCI).
 	self assert: 0 equals: runner totalTests.
 	self assert: runner isSuccessful.
 ]

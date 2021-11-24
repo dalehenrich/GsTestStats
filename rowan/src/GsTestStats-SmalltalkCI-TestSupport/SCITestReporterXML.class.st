@@ -6,7 +6,7 @@ Class {
 
 { #category : 'executing' }
 SCITestReporterXML class >> report: aSCITestRunner spec: aSCISpec [
-	SmalltalkCI forceNewFileNamed: (aSCITestRunner suiteName , '.xml') do: [ :stream |
+	(aSCITestRunner suiteName , '.xml') readStreamDo: [ :stream |
 		self report: aSCITestRunner spec: aSCISpec on: stream ]
 ]
 

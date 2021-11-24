@@ -26,21 +26,6 @@ SCITestRunner class >> runClasses: aCollectionOfClasses [
 	^ self runClasses: aCollectionOfClasses spec: SmalltalkCISpec new
 ]
 
-{ #category : 'running-deprecated' }
-SCITestRunner class >> runClasses: aCollectionOfClasses named: aSuiteName [
-	SmalltalkCI deprecated: 'Use SCITestRunner>>runClasses:spec: instead'.
-	^ self runClasses: aCollectionOfClasses
-]
-
-{ #category : 'running-deprecated' }
-SCITestRunner class >> runClasses: aCollectionOfClasses named: aSuiteName failOnZeroTests: failOnZeroTests [
-	| spec |
-	SmalltalkCI deprecated: 'Use SCITestRunner>>runClasses:spec: instead'.
-	spec := SmalltalkCISpec new.
-	spec testing at: #failOnZeroTests put: failOnZeroTests.
-	^ self runClasses: aCollectionOfClasses spec: spec
-]
-
 { #category : 'running' }
 SCITestRunner class >> runClasses: aCollectionOfClasses spec: aSCISpec [
   | suite classes |
@@ -61,15 +46,6 @@ SCITestRunner class >> runSpec: aSCISpec [
 { #category : 'running' }
 SCITestRunner class >> runSuite: aTestSuite [
 	^ self runSuite: aTestSuite spec: SmalltalkCISpec new
-]
-
-{ #category : 'running-deprecated' }
-SCITestRunner class >> runSuite: aTestSuite failOnZeroTests: failOnZeroTests [
-	| spec |
-	SmalltalkCI deprecated: 'Use SCITestRunner>>runSuite:spec: instead'.
-	spec := SmalltalkCISpec new.
-	spec testing at: #failOnZeroTests put: failOnZeroTests.
-	^ self runSuite: aTestSuite spec: spec
 ]
 
 { #category : 'running' }
@@ -124,7 +100,7 @@ SCITestRunner >> initializeOn: aTestSuite [
 SCITestRunner >> isSuccessful [
 	| deprecationWarningCheck |
 	deprecationWarningCheck := spec failOnSCIDeprecationWarnings
-		ifTrue: [ SmalltalkCI deprecationWarnings isEmpty ]
+		ifTrue: [ GsTestStatsCI deprecationWarnings isEmpty ]
 		ifFalse: [ true ].
 	^ deprecationWarningCheck and: [
 			(self erroredTests + self failedTests) = 0]
@@ -137,12 +113,11 @@ SCITestRunner >> passingTests [
 
 { #category : 'running' }
 SCITestRunner >> printProgress: aTestResult [
-	SmalltalkCI stdout nextPut: (aTestResult passed
+	GsTestStatsCI stdout nextPut: (aTestResult passed
 		ifTrue: [ $. ]
 		ifFalse: [ (aTestResult failed)
 			ifTrue: [ $F ]
 			ifFalse: [ $E ] ])
-
 ]
 
 { #category : 'accessing' }
@@ -153,7 +128,7 @@ SCITestRunner >> results [
 
 { #category : 'running' }
 SCITestRunner >> run [
-	[ self setUp. suiteTime := SmalltalkCI timeToRun: [ self runAll ] ] ensure: [ self tearDown ]
+	[ self setUp. suiteTime := GsTestStatsCI timeToRun: [ self runAll ] ] ensure: [ self tearDown ]
 ]
 
 { #category : 'running' }
@@ -164,9 +139,9 @@ SCITestRunner >> runAll [
 { #category : 'running' }
 SCITestRunner >> runCase: aTestCase [
 	| result |
-	SmalltalkCI printDebug: aTestCase asString.
+	GsTestStatsCI printDebug: aTestCase asString.
 	result := SCITestRunnerResult new testCase: aTestCase; yourself.
-	result time: (SmalltalkCI timeToRun: [
+	result time: (GsTestStatsCI timeToRun: [
 		[ [ self basicRunCase: aTestCase ]
 			on: self class errorExceptions
 			do: [ :err |
@@ -179,8 +154,6 @@ SCITestRunner >> runCase: aTestCase [
 	self printProgress: result.
 	(results at: aTestCase class ifAbsentPut: [ OrderedCollection new ])
 		add: result
-		
-	
 ]
 
 { #category : 'private' }
@@ -190,13 +163,12 @@ SCITestRunner >> serializeError: error of: aTestCase [
 
 { #category : 'running' }
 SCITestRunner >> setUp [
-	SmalltalkCI printToStdout: 'Running suite "', self suiteName ,'" with ', suite tests size asString, ' tests.'.
+	GsTestStatsCI printToStdout: 'Running suite "', self suiteName ,'" with ', suite tests size asString, ' tests.'.
 
 	"Initialize the test resources."
 	suite resources do: [ :each |
 		each isAvailable
 			ifFalse: [ TestResult signalErrorWith: 'Resource ' , each name , ' could not be initialized' ] ]
-
 ]
 
 { #category : 'private' }
@@ -235,7 +207,7 @@ SCITestRunner >> suiteTimeInSeconds [
 
 { #category : 'accessing' }
 SCITestRunner >> suiteTimeString [
-	^ (SmalltalkCI stringFor: self suiteTimeInSeconds maxDecimalPlaces: 2), 's'
+	^ (GsTestStatsCI stringFor: self suiteTimeInSeconds maxDecimalPlaces: 2), 's'
 ]
 
 { #category : 'accessing' }
@@ -248,13 +220,12 @@ SCITestRunner >> tearDown [
 	suite resources
 		do: [ :each | each reset ].
 
-	SmalltalkCI printToStdout: 'Finished running suite: ', self suiteName.
+	GsTestStatsCI printToStdout: 'Finished running suite: ', self suiteName.
 	
 	(self spec failOnZeroTests and: [ self totalTests == 0 ])
 		ifTrue: [ Error signal: 'No tests were executed.
 
 If this is intended, use `#failOnZeroTests : false` in your SmalltalkCISpec.' ].
-
 ]
 
 { #category : 'accessing' }

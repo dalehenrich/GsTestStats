@@ -8,17 +8,11 @@ Class {
 SCIGemStoneTestReporterXML class >> report: aSCITestRunner spec: aSCISpec xmlLogDirPath: xmlLogDirPath [
 	| cacheStream |
 	cacheStream := WriteStreamPortable on: String new.
-	[ self report: aSCITestRunner spec: aSCISpec on: cacheStream.
-	SmalltalkCI
-		forceNewFileNamed: (self xmlFileNamed: aSCITestRunner suiteName in: xmlLogDirPath)
-		do: [ :stream | stream nextPutAll: cacheStream ]]
-			ensure: [ cacheStream close ]
-]
-
-{ #category : 'executing-deprecated' }
-SCIGemStoneTestReporterXML class >> report: aSCITestRunner xmlLogDirPath: xmlLogDirPath [
-	SmalltalkCI deprecated: 'Use report:spec:xmlLogDirPath: instead'.
-	self report: aSCITestRunner spec: SmalltalkCISpec new xmlLogDirPath: xmlLogDirPath
+	[ 
+	self report: aSCITestRunner spec: aSCISpec on: cacheStream.
+	(self xmlFileNamed: aSCITestRunner suiteName in: xmlLogDirPath)
+		writeStreamDo: [ :stream | stream nextPutAll: cacheStream ] ]
+		ensure: [ cacheStream close ]
 ]
 
 { #category : 'helpers' }

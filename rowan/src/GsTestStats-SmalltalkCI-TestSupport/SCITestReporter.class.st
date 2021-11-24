@@ -8,12 +8,6 @@ Class {
 	#category : 'GsTestStats-SmalltalkCI-TestSupport'
 }
 
-{ #category : 'executing-deprecated' }
-SCITestReporter class >> report: aSCITestRunner [
-	SmalltalkCI deprecated: 'Use report:spec: instead'.
-	self	 report: aSCITestRunner spec: SmalltalkCISpec new
-]
-
 { #category : 'executing' }
 SCITestReporter class >> report: aSCITestRunner on: aStream [
 	self	 report: aSCITestRunner spec: SmalltalkCISpec new on: aStream

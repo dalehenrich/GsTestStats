@@ -6,7 +6,7 @@ Class {
 
 { #category : 'executing' }
 SCITestReporterStdout class >> report: aSCITestRunner spec: aSCISpec [
-	self report: aSCITestRunner spec: aSCISpec on: SmalltalkCI stdout
+	self report: aSCITestRunner spec: aSCISpec on: GsTestStatsCI stdout
 ]
 
 { #category : 'printing' }
@@ -31,7 +31,7 @@ SCITestReporterStdout >> printBanner: aTitle subtitle: aSubtitle color: aColor [
 
 { #category : 'printing' }
 SCITestReporterStdout >> printDeprecationWarnings [
-	SmalltalkCI deprecationWarnings ifNotEmpty: [
+	GsTestStatsCI deprecationWarnings ifNotEmpty: [
     self
       newLine;
       printTravisFold: 'deprecation_warnings' action: 'start';
@@ -39,7 +39,7 @@ SCITestReporterStdout >> printDeprecationWarnings [
       print: 'smalltalkCI Deprecation Warnings';
       resetMode;
       newLine.
-    SmalltalkCI deprecationWarnings do: [ :each | self print: ' - ', each; newLine ].
+    GsTestStatsCI deprecationWarnings do: [ :each | self print: ' - ', each; newLine ].
     self printTravisFold: 'deprecation_warnings' action: 'end' ].
 ]
 
@@ -79,19 +79,19 @@ SCITestReporterStdout >> printException: aResult [
 SCITestReporterStdout >> printNotPassingResults [
 	| title |
 	title := (runner erroredTests + runner failedTests) asString, ' tests did not pass:'.
-	self printBanner: title color: SmalltalkCI ansiRed.
+	self printBanner: title color: GsTestStatsCI ansiRed.
 	runner results keysAndValuesDo: [ :class :results | | notPassing |
 		notPassing := results select: [ :result | result passed not ].
 		notPassing ifNotEmpty: [
 			self printTitle: class asString.
 			notPassing do: [ :result | self printException: result ] ] ].
-	SmalltalkCI isTravisBuild
+	GsTestStatsCI isTravisBuild
 		ifFalse: [ self printNotPassingSummary ]
 ]
 
 { #category : 'printing' }
 SCITestReporterStdout >> printNotPassingSummary [
-	self newLine; printBanner: 'Summary' color: SmalltalkCI ansiRed.
+	self newLine; printBanner: 'Summary' color: GsTestStatsCI ansiRed.
 	runner results keysAndValuesDo: [ :class :results | | notPassing |
 		notPassing := results select: [ :result | result passed not ].
 		notPassing ifNotEmpty: [
@@ -131,7 +131,7 @@ SCITestReporterStdout >> printResults [
 
 { #category : 'printing' }
 SCITestReporterStdout >> printStart [
-	self printBanner: runner suiteName subtitle: runner summary color: SmalltalkCI ansiBlue
+	self printBanner: runner suiteName subtitle: runner summary color: GsTestStatsCI ansiBlue
 ]
 
 { #category : 'printing' }
@@ -144,13 +144,13 @@ SCITestReporterStdout >> printTitle: aTitle [
 
 { #category : 'printing' }
 SCITestReporterStdout >> printTravisFold: foldName action: action [
-	SmalltalkCI isTravisBuild ifFalse: [ ^ self ].
-	self print: (SmalltalkCI travisFold: foldName action: action)
+	GsTestStatsCI isTravisBuild ifFalse: [ ^ self ].
+	self print: (GsTestStatsCI travisFold: foldName action: action)
 ]
 
 { #category : 'ansi' }
 SCITestReporterStdout >> resetMode [
-	self print: SmalltalkCI ansiReset
+	self print: GsTestStatsCI ansiReset
 ]
 
 { #category : 'helpers' }
@@ -160,12 +160,12 @@ SCITestReporterStdout >> rightPad: aString to: length [
 
 { #category : 'ansi' }
 SCITestReporterStdout >> setModeBlue [
-	self print: SmalltalkCI ansiBlue
+	self print: GsTestStatsCI ansiBlue
 ]
 
 { #category : 'ansi' }
 SCITestReporterStdout >> setModeBold [
-	self print: SmalltalkCI ansiBold
+	self print: GsTestStatsCI ansiBold
 ]
 
 { #category : 'ansi' }
@@ -180,15 +180,15 @@ SCITestReporterStdout >> setModeBoldRed [
 
 { #category : 'ansi' }
 SCITestReporterStdout >> setModeGreen [
-	self print: SmalltalkCI ansiGreen
+	self print: GsTestStatsCI ansiGreen
 ]
 
 { #category : 'ansi' }
 SCITestReporterStdout >> setModeRed [
-	self print: SmalltalkCI ansiRed
+	self print: GsTestStatsCI ansiRed
 ]
 
 { #category : 'ansi' }
 SCITestReporterStdout >> setModeYellow [
-	self print: SmalltalkCI ansiYellow
+	self print: GsTestStatsCI ansiYellow
 ]

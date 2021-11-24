@@ -25,18 +25,18 @@ SCITestRunnerResult class >> checkMark [
 SCITestRunnerResult >> ansiTitle [
 	| prefix |
 	prefix := self passed
-		ifTrue: [ self class checkMark, SmalltalkCI ansiReset ]
+		ifTrue: [ self class checkMark, GsTestStatsCI ansiReset ]
 		ifFalse: [ self class ballot ].
-	^ self color, ' ', prefix, ' ', self title, SmalltalkCI ansiReset
+	^ self color, ' ', prefix, ' ', self title, GsTestStatsCI ansiReset
 ]
 
 { #category : 'accessing' }
 SCITestRunnerResult >> ansiTitleContractedTo: anInteger [
 	| prefix |
 	prefix := self passed
-		ifTrue: [ self class checkMark, SmalltalkCI ansiReset ]
+		ifTrue: [ self class checkMark, GsTestStatsCI ansiReset ]
 		ifFalse: [ self class ballot ].
-	^ self color, ' ', prefix, ' ', (self title contractTo: anInteger), SmalltalkCI ansiReset
+	^ self color, ' ', prefix, ' ', (self title contractTo: anInteger), GsTestStatsCI ansiReset
 ]
 
 { #category : 'printing' }
@@ -48,10 +48,10 @@ SCITestRunnerResult >> asString [
 
 { #category : 'accessing' }
 SCITestRunnerResult >> color [
-	self errored ifTrue: [ ^ SmalltalkCI ansiRed ].
-	self failed ifTrue: [ ^ SmalltalkCI ansiYellow ].
-	self passedUnexpectedly ifTrue: [ ^ SmalltalkCI ansiYellow ].
-	^ SmalltalkCI ansiGreen
+	self errored ifTrue: [ ^ GsTestStatsCI ansiRed ].
+	self failed ifTrue: [ ^ GsTestStatsCI ansiYellow ].
+	self passedUnexpectedly ifTrue: [ ^ GsTestStatsCI ansiYellow ].
+	^ GsTestStatsCI ansiGreen
 ]
 
 { #category : 'accessing' }
@@ -70,7 +70,7 @@ SCITestRunnerResult >> failed [
 
 { #category : 'accessing' }
 SCITestRunnerResult >> foldName [
-	^ SmalltalkCI hash: self asString maxLength: 6
+	^ GsTestStatsCI hash: self asString maxLength: 6
 ]
 
 { #category : 'accessing' }
@@ -160,7 +160,7 @@ SCITestRunnerResult >> time: anObject [
 { #category : 'accessing' }
 SCITestRunnerResult >> title [
 	| timeString skippedText |
-	timeString := SmalltalkCI stringFor: self time maxDecimalPlaces: 0.
+	timeString := GsTestStatsCI stringFor: self time maxDecimalPlaces: 0.
 	skippedText := self skipped ifTrue: [ 'skipped, ' ] ifFalse: [ '' ].
 	^ self asString, ' (', skippedText, timeString, 'ms)'
 ]

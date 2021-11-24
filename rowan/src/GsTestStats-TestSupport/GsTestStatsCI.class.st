@@ -1,83 +1,84 @@
 Class {
-	#name : 'SmalltalkCI',
-	#superclass : 'SCIObjectWithSpec',
-	#instVars : [
-		'projectDirectory'
-	],
+	#name : 'GsTestStatsCI',
+	#superclass : 'Object',
 	#classVars : [
 		'IsColorful'
 	],
-	#category : 'GsTestStats-SmalltalkCI-TestSupport'
+	#category : 'GsTestStats-TestSupport'
 }
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiBlue [
+GsTestStatsCI class >> ansiBlue [
 	^ self isColorful
 		ifTrue: [ self escape, '[34m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiBold [
+GsTestStatsCI class >> ansiBold [
 	^ self isColorful
 		ifTrue: [ self escape, '[1m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiClear [
+GsTestStatsCI class >> ansiClear [
 	^ self isColorful
 		ifTrue: [ self escape, '[0K' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiGray [
+GsTestStatsCI class >> ansiGray [
 	^ self isColorful
 		ifTrue: [ self escape, '[37m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiGreen [
+GsTestStatsCI class >> ansiGreen [
 	^ self isColorful
 		ifTrue: [ self escape, '[32m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiRed [
+GsTestStatsCI class >> ansiRed [
 	^ self isColorful
 		ifTrue: [ self escape, '[31m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiReset [
+GsTestStatsCI class >> ansiReset [
 	^ self isColorful
 		ifTrue: [ self escape, '[0m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> ansiYellow [
+GsTestStatsCI class >> ansiYellow [
 	^ self isColorful
 		ifTrue: [ self escape, '[33m' ]
 		ifFalse: [ '' ]
 ]
 
 { #category : 'ansi' }
-SmalltalkCI class >> escape [
+GsTestStatsCI class >> escape [
 	^ Character escape asString
 ]
 
+{ #category : 'compatibility' }
+GsTestStatsCI class >> getEnv: aKey [
+	^ System gemEnvironmentVariable: aKey
+]
+
 { #category : 'helpers' }
-SmalltalkCI class >> isColorful [
+GsTestStatsCI class >> isColorful [
 	"IsColorful := nil"
 	^ IsColorful ifNil: [ IsColorful := (self getEnv: 'SCIII_COLORFUL') = 'true' ]
 ]
 
-{ #category : 'compatibility' }
-SmalltalkCI class >> getEnv: aKey [
-	^ System gemEnvironmentVariable: aKey
+{ #category : 'accessing' }
+GsTestStatsCI class >> platformClass [
 ]

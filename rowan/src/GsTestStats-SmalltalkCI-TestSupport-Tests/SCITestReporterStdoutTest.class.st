@@ -6,7 +6,7 @@ Class {
 
 { #category : 'fixtures' }
 SCITestReporterStdoutTest class >> failureFixture [
-	^ SmalltalkCI isTravisBuild
+	^ GsTestStatsCI isTravisBuild
 		ifTrue: [ self failureFixtureTravis ]
 		ifFalse: [ self failureFixtureNonTravis ]
 ]
@@ -126,9 +126,9 @@ SCITestReporterStdoutTest >> assert: aFixture matches: aString [
 { #category : 'testing' }
 SCITestReporterStdoutTest >> testReportFailure [
 	| warnings runner reporter stream result |
-	warnings := SmalltalkCI deprecationWarnings.
-	[ SmalltalkCI deprecatedReset.
-	runner := SmalltalkCI testRunnerClass runSpec: (
+	warnings := GsTestStatsCI deprecationWarnings.
+	[ GsTestStatsCI deprecatedReset.
+	runner := GsTestStatsCI testRunnerClass runSpec: (
 		(Rowan globalNamed: 'SCIDummySpec')
 			named: 'Stdout-testReportFailure'
 			forClass: (Rowan globalNamed: 'SCIExcludedTests')).
@@ -136,14 +136,13 @@ SCITestReporterStdoutTest >> testReportFailure [
 	reporter := SCITestReporterStdout report: runner on: stream.
 	result := stream contents.
 	self assert: self class failureFixture matches: result ]
-		ensure: [ SmalltalkCI deprecationWarnings: warnings ]
-
+		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
 ]
 
 { #category : 'testing' }
 SCITestReporterStdoutTest >> testReportSuccess [
 	| runner reporter stream result |
-	runner := SmalltalkCI testRunnerClass runSpec: (
+	runner := GsTestStatsCI testRunnerClass runSpec: (
 		(Rowan globalNamed: 'SCIDummySpec')
 			named: 'Stdout-testReportSuccess'
 			forClass: (Rowan globalNamed: 'SCIPassingTests')).
