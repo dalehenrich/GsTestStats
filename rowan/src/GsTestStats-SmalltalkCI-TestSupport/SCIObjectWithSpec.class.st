@@ -7,6 +7,17 @@ Class {
 	#category : 'GsTestStats-SmalltalkCI-TestSupport'
 }
 
+{ #category : 'instance creation' }
+SCIObjectWithSpec class >> new [
+	^ self basicNew initialize
+]
+
+{ #category : 'Initialization' }
+SCIObjectWithSpec >> initialize [
+  "Default implementation"  
+  ^ self
+]
+
 { #category : 'accessing' }
 SCIObjectWithSpec >> spec [
 

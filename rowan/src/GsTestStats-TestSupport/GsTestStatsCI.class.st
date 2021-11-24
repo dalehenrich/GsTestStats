@@ -79,6 +79,35 @@ GsTestStatsCI class >> isColorful [
 	^ IsColorful ifNil: [ IsColorful := (self getEnv: 'SCIII_COLORFUL') = 'true' ]
 ]
 
+{ #category : 'helpers' }
+GsTestStatsCI class >> isDebug [
+	^ (self getEnv: 'SCIII_DEBUG') = 'true'
+]
+
 { #category : 'accessing' }
 GsTestStatsCI class >> platformClass [
+]
+
+{ #category : 'helpers' }
+GsTestStatsCI class >> printDebug: aString [
+	GsTestStatsCI isDebug
+		ifTrue: [ GsTestStatsCI printToStdout: aString ]
+]
+
+{ #category : 'helpers' }
+GsTestStatsCI class >> printToStdout: msg [
+	self stdout
+		nextPutAll: msg;
+		cr;
+		flush
+]
+
+{ #category : 'helpers' }
+GsTestStatsCI class >> stdout [
+	^ GsFile stdoutServer
+]
+
+{ #category : 'compatibility' }
+GsTestStatsCI class >> timeToRun: aBlock [
+	^ Time millisecondsElapsedTime: aBlock
 ]

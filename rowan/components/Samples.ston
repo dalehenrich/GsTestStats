@@ -6,9 +6,21 @@ RwSimpleProjectLoadComponentV2 {
 		'tests/Samples'
 	],
 	#packageNames : [
+		'GsTestStats-Kernel-Extensions',
 		'GsTestStats-Samples',
 		'GsTestStats-TestSupport',
 		'GsTestStats-SmalltalkCI-TestSupport'
 	],
+	#conditionalPackageMapSpecs : {
+		'gemstone' : {
+			'allusers' : {
+				#packageNameToPlatformPropertiesMap : {
+					'GsTestStats-Kernel-Extensions' : {
+						'symbolDictName' : 'Globals'
+					}
+				}
+			}
+		}
+	},
 	#comment : ''
 }
