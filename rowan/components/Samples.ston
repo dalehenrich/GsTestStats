@@ -2,12 +2,13 @@ RwSimpleProjectLoadComponentV2 {
 	#name : 'Samples',
 	#condition : 'common',
 	#projectNames : [ ],
-	#componentNames : [ ],
+	#componentNames : [
+		'tests/Samples'
+	],
 	#packageNames : [
 		'GsTestStats-Samples',
 		'GsTestStats-TestSupport',
-		'GsTestStats-SmalltalkCI-TestSupport',
-		'GsTestStats-SmalltalkCI-TestSupport-Tests'
+		'GsTestStats-SmalltalkCI-TestSupport'
 	],
 	#comment : ''
 }

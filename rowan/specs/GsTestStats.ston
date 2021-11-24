@@ -8,6 +8,7 @@ RwLoadSpecificationV2 {
 		'Samples'
 	],
 	#customConditionalAttributes : [
+		'tests'
 	],
 	#comment : 'test results tracking'
 }
