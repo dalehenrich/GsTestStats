@@ -108,6 +108,15 @@ GsTestStatsCI class >> stdout [
 ]
 
 { #category : 'compatibility' }
+GsTestStatsCI class >> stringFor: aNumber maxDecimalPlaces: placesDesired [
+	^ aNumber asFloat
+		asStringUsingFormat:
+			{0.
+			placesDesired.
+			false}
+]
+
+{ #category : 'compatibility' }
 GsTestStatsCI class >> timeToRun: aBlock [
 	^ Time millisecondsElapsedTime: aBlock
 ]
