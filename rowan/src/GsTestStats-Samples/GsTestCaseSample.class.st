@@ -5,7 +5,8 @@ Class {
 		'suite',
 		'className',
 		'selector',
-		'status'
+		'status',
+		'time'
 	],
 	#category : 'GsTestStats-Samples'
 }
@@ -115,4 +116,14 @@ GsTestCaseSample >> testSummaryOn: strm [
 						tab;
 						nextPutAll: each;
 						lf ] ]
+]
+
+{ #category : 'accessing' }
+GsTestCaseSample >> time [
+	^time
+]
+
+{ #category : 'accessing' }
+GsTestCaseSample >> time: object [
+	time := object
 ]

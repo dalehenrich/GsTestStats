@@ -43,13 +43,14 @@ GsTestStatsTestReporter >> printResult: aResult [
 			aResult errored
 				ifTrue: [ 'errors' ]
 				ifFalse: [ 'failures' ] ].
-	testCase := Dictionary new
-		at: #'className' put: aResult testCase class name;
-		at: #'selector' put: aResult testCase selector;
-		at: #'time' put: aResult time / 1000.0;
-		at: #'status' put: status;
+	testCase := GsTestCaseSample new
+		className: aResult testCase class name asString;
+		selector: aResult testCase selector;
+		status: status;
+		suite: self testSuiteSample;
+		time: aResult time;	"milliseconds"
 		yourself.
-	self testSuiteSample testCases add: testCase.
+	self testSuiteSample testCases add: testCase
 ]
 
 { #category : 'printing' }

@@ -2,6 +2,7 @@ Class {
 	#name : 'GsTestStatsCI',
 	#superclass : 'Object',
 	#classVars : [
+		'DeprecationWarnings',
 		'IsColorful'
 	],
 	#category : 'GsTestStats-TestSupport'
@@ -63,6 +64,11 @@ GsTestStatsCI class >> ansiYellow [
 		ifFalse: [ '' ]
 ]
 
+{ #category : 'helpers' }
+GsTestStatsCI class >> deprecationWarnings [
+	^ DeprecationWarnings ifNil: [ DeprecationWarnings := OrderedCollection new ]
+]
+
 { #category : 'ansi' }
 GsTestStatsCI class >> escape [
 	^ Character escape asString
@@ -82,6 +88,11 @@ GsTestStatsCI class >> isColorful [
 { #category : 'helpers' }
 GsTestStatsCI class >> isDebug [
 	^ (self getEnv: 'SCIII_DEBUG') = 'true'
+]
+
+{ #category : 'printing' }
+GsTestStatsCI class >> isTravisBuild [
+	^ false
 ]
 
 { #category : 'accessing' }

@@ -128,7 +128,10 @@ SCITestRunner >> results [
 
 { #category : 'running' }
 SCITestRunner >> run [
-	[ self setUp. suiteTime := GsTestStatsCI timeToRun: [ self runAll ] ] ensure: [ self tearDown ]
+	[ 
+	self setUp.
+	suiteTime := GsTestStatsCI timeToRun: [ self runAll ] ]
+		ensure: [ self tearDown ]
 ]
 
 { #category : 'running' }

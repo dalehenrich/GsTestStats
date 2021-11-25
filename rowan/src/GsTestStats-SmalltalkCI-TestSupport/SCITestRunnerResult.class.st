@@ -18,7 +18,7 @@ SCITestRunnerResult class >> ballot [
 
 { #category : 'strings' }
 SCITestRunnerResult class >> checkMark [
-	^ (Character value: 10003) asString
+	^ (Character codePoint: 10003) asString
 ]
 
 { #category : 'accessing' }
