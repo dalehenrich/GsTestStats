@@ -6,7 +6,11 @@ Class {
 
 { #category : 'private' }
 SCIGemStoneTestRunner >> serializeError: error of: aTestCase [
-	self halt: 'implement if needed ... we are serializing errors to json if that matters'
+	"implement if needed ... we are serializing errors to json if that matters"
+
+	"for now this is more work than necessary"
+
+	
 ]
 
 { #category : 'private' }

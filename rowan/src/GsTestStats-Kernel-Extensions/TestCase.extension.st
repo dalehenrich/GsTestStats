@@ -1,6 +1,22 @@
 Extension { #name : 'TestCase' }
 
 { #category : '*gsteststats-kernel-extensions' }
+TestCase class >> addToSuite: suite fromMethods: testMethods [
+	testMethods do: [ :selector | suite addTest: (self selector: selector) ].
+	^ suite
+]
+
+{ #category : '*gsteststats-kernel-extensions' }
+TestCase class >> addToSuiteFromSelectors: suite [
+	^ self
+		addToSuite: suite
+		fromMethods:
+			(self shouldInheritSelectors
+				ifTrue: [ self allTestSelectors ]
+				ifFalse: [ self testSelectors ])
+]
+
+{ #category : '*gsteststats-kernel-extensions' }
 TestCase >> expectedFailures [
 	^ Array new
 ]

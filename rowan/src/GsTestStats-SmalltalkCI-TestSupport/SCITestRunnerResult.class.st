@@ -13,7 +13,7 @@ Class {
 
 { #category : 'strings' }
 SCITestRunnerResult class >> ballot [
-	^ (Character value: 10007) asString
+	^ (Character codePoint: 10007) asString
 ]
 
 { #category : 'strings' }

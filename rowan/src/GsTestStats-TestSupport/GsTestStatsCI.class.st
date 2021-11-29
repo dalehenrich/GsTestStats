@@ -71,6 +71,11 @@ GsTestStatsCI class >> deprecated: aMessage [
 ]
 
 { #category : 'helpers' }
+GsTestStatsCI class >> deprecatedReset [
+	DeprecationWarnings := OrderedCollection new
+]
+
+{ #category : 'helpers' }
 GsTestStatsCI class >> deprecationWarning [
 	| senderMethod |
 	senderMethod := (GsProcess _frameContentsAt: 3) first.	"First sender is SmalltalkCI>>deprecated"
@@ -92,10 +97,17 @@ GsTestStatsCI class >> getEnv: aKey [
 	^ System gemEnvironmentVariable: aKey
 ]
 
+{ #category : 'compatibility' }
+GsTestStatsCI class >> hash: aString maxLength: aLength [
+	^ aString hash asHexString asLowercase truncateTo: aLength
+]
+
 { #category : 'helpers' }
 GsTestStatsCI class >> isColorful [
 	"IsColorful := nil"
-	^ IsColorful ifNil: [ IsColorful := (self getEnv: 'SCIII_COLORFUL') = 'true' ]
+
+	^ IsColorful
+		ifNil: [ IsColorful := ((self getEnv: 'SCIII_COLORFUL') ifNil: [ 'true' ]) = 'true' ]
 ]
 
 { #category : 'helpers' }
@@ -138,6 +150,11 @@ GsTestStatsCI class >> stringFor: aNumber maxDecimalPlaces: placesDesired [
 			{0.
 			placesDesired.
 			false}
+]
+
+{ #category : 'compatibility' }
+GsTestStatsCI class >> testRunnerClass [
+	^ SCIGemStoneTestRunner
 ]
 
 { #category : 'compatibility' }

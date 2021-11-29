@@ -10,7 +10,7 @@ Class {
 
 { #category : 'executing' }
 SCITestReporter class >> report: aSCITestRunner on: aStream [
-	self	 report: aSCITestRunner spec: SmalltalkCISpec new on: aStream
+	self report: aSCITestRunner spec: SmalltalkCISpec new on: aStream
 ]
 
 { #category : 'executing' }
@@ -29,7 +29,7 @@ SCITestReporter class >> report: aSCITestRunner spec: aSCISpec on: aStream [
 
 { #category : 'helpers' }
 SCITestReporter >> newLine [
-	stream lf
+	stream crlf
 ]
 
 { #category : 'helpers' }
