@@ -65,6 +65,19 @@ GsTestStatsCI class >> ansiYellow [
 ]
 
 { #category : 'helpers' }
+GsTestStatsCI class >> deprecated: aMessage [
+	self deprecationWarnings
+		add: self deprecationWarning , ' (' , aMessage , ')'
+]
+
+{ #category : 'helpers' }
+GsTestStatsCI class >> deprecationWarning [
+	| senderMethod |
+	senderMethod := (GsProcess _frameContentsAt: 3) first.	"First sender is SmalltalkCI>>deprecated"
+	^ senderMethod inClass asString , '>>' , senderMethod selector asString
+]
+
+{ #category : 'helpers' }
 GsTestStatsCI class >> deprecationWarnings [
 	^ DeprecationWarnings ifNil: [ DeprecationWarnings := OrderedCollection new ]
 ]
