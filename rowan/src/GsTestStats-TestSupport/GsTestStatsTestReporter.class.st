@@ -1,7 +1,9 @@
 Class {
 	#name : 'GsTestStatsTestReporter',
-	#superclass : 'SCITestReporter',
+	#superclass : 'Object',
 	#instVars : [
+		'runner',
+		'stream',
 		'testSuiteSample'
 	],
 	#category : 'GsTestStats-TestSupport'
@@ -10,6 +12,11 @@ Class {
 { #category : 'executing' }
 GsTestStatsTestReporter class >> report: aSCITestRunner [
 	^ self report: aSCITestRunner spec: SmalltalkCISpec new
+]
+
+{ #category : 'executing' }
+GsTestStatsTestReporter class >> report: aSCITestRunner on: aStream [
+	self report: aSCITestRunner spec: SmalltalkCISpec new on: aStream
 ]
 
 { #category : 'executing' }
@@ -22,7 +29,20 @@ GsTestStatsTestReporter class >> report: aSCITestRunner spec: aSCISpec [
 
 { #category : 'executing' }
 GsTestStatsTestReporter class >> report: aSCITestRunner spec: aSCISpec on: aStream [
-	self shouldNotImplement: #'report:spec:on:'
+	self	 new
+		runner: aSCITestRunner;
+		stream: aStream;
+		report
+]
+
+{ #category : 'helpers' }
+GsTestStatsTestReporter >> newLine [
+	stream lf
+]
+
+{ #category : 'helpers' }
+GsTestStatsTestReporter >> print: aString [
+	stream nextPutAll: aString asUnicodeString
 ]
 
 { #category : 'printing' }
@@ -76,8 +96,39 @@ GsTestStatsTestReporter >> printStart [
 
 { #category : 'printing' }
 GsTestStatsTestReporter >> report [
-	super report.
+	self printStart.
+	self printResults.
+	self printEnd.
 	^ self testSuiteSample
+]
+
+{ #category : 'accessing' }
+GsTestStatsTestReporter >> runner [
+
+	^ runner
+]
+
+{ #category : 'accessing' }
+GsTestStatsTestReporter >> runner: anObject [
+
+	runner := anObject
+]
+
+{ #category : 'accessing' }
+GsTestStatsTestReporter >> stream [
+
+	^ stream
+]
+
+{ #category : 'accessing' }
+GsTestStatsTestReporter >> stream: anObject [
+
+	stream := anObject
+]
+
+{ #category : 'helpers' }
+GsTestStatsTestReporter >> tab [
+	stream nextPut: Character tab
 ]
 
 { #category : 'accessing' }
