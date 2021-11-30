@@ -125,10 +125,6 @@ GsTestStatsCI class >> isTravisBuild [
 	^ false
 ]
 
-{ #category : 'accessing' }
-GsTestStatsCI class >> platformClass [
-]
-
 { #category : 'helpers' }
 GsTestStatsCI class >> printDebug: aString [
 	GsTestStatsCI isDebug
