@@ -34,6 +34,7 @@ jobs:
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
           $SUPERDOIT_ROOT/examples/simple/simple.solo -h
+          cat $GEMSTONE_TOPAZINI_PATH
           $SUPERDOIT_ROOT/examples/simple/simple.stone -h -- -l -I $GEMSTONE_TOPAZINI_PATH
           ./bin/GsTestStatsCI.stone -h -- -l -I $GEMSTONE_TOPAZINI_PATH
           ./bin/GsTestStatsCI.stone -- -l -I $GEMSTONE_TOPAZINI_PATH
