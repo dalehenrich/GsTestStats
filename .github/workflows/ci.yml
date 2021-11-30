@@ -33,7 +33,10 @@ jobs:
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
-          ./bin/GsTestStatsCI.stone
+          $SUPERDOIT_ROOT/examples/simple/simple.solo -h
+          $SUPERDOIT_ROOT/examples/simple/simple.stone -h -- -l -I $GEMSTONE_TOPAZINI_PATH
+          ./bin/GsTestStatsCI.stone -h -- -l -I $GEMSTONE_TOPAZINI_PATH
+          ./bin/GsTestStatsCI.stone -- -l -I $GEMSTONE_TOPAZINI_PATH
         env:
           SUPERDOIT_ROOT: ${{ steps.setup-superDoit.outputs.superDoit-root }}
           GEMSTONE: ${{ steps.setup-superDoit.outputs.gemstone-product-path }}
