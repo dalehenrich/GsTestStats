@@ -22,7 +22,7 @@ specUrls
 file:$GITHUB_WORKSPACE/rowan/specs/GsTestStats.ston
 %
 doit
-	| runner reporter stream result |
+	| runner reporter result |
 	self preDoitSpecLoad: [:loadSpec |
 		loadSpec 
 			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
@@ -31,7 +31,10 @@ doit
 	runner := (Rowan globalNamed: 'GsTestStatsCITestRunner')
 		runClasses: {Rowan globalNamed: 'SCIPassingTests'}
 		named: 'Stdout-testReportSuccess'.
-	stream := WriteStream on: (String new: 1000).
+false
+ifTrue: [ 
+(Rowan globalNamed: 'GsTestStatsCITestReporterStdout') _setMethodBreak: #'printPass:' stepPoint: 3.
+].
 	reporter := (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner.
 	runner isSuccessful
 		ifFalse: [ self exitWithStatus: 1 ].

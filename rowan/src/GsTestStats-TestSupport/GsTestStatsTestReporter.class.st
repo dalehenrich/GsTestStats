@@ -21,7 +21,9 @@ GsTestStatsTestReporter >> newLine [
 
 { #category : 'helpers' }
 GsTestStatsTestReporter >> print: aString [
-	stream nextPutAll: aString asUnicodeString
+	(stream respondsTo: #'nextPutAllUtf8:')
+		ifTrue: [ stream nextPutAllUtf8: aString encodeAsUTF8 ]
+		ifFalse: [ stream nextPutAll: aString ]
 ]
 
 { #category : 'printing' }
