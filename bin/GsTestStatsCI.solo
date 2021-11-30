@@ -1,4 +1,10 @@
 #!/usr/bin/env superdoit_solo
+options
+{
+	SuperDoitOptionalOptionWithNoArg long: 'fail'.
+	SuperDoitOptionalOptionWithNoArg long: 'pass'.
+}
+%
 usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]
@@ -14,27 +20,31 @@ EXAMPLES
   $basename --help
   $basename -h
   $basename --debug
-  $basename -D
-  $basename  
+  $basename -D GsTestStatsTest # run tests for classes listed on command line
+  $basename -D --fail          # run tests that pass and fail
+  $basename -D --pass          # run tests that pass
 -----
 %
 specUrls
 file:$GITHUB_WORKSPACE/rowan/specs/GsTestStats.ston
 %
 doit
-	| runner reporter result |
+	| runner reporter result classes |
 	self preDoitSpecLoad: [:loadSpec |
 		loadSpec 
 			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
 			projectsHome: '$GITHUB_WORKSPACE/..'.
 		].
+	classes := self fail
+		ifTrue: [ { Rowan globalNamed: 'SCIExcludedTests'. Rowan globalNamed: 'SCIPassingTests' } ]
+		ifFalse: [ 
+			self pass
+				ifTrue: [ {Rowan globalNamed: 'SCIPassingTests'} ]
+				ifFalse: [ 
+					(self positionalArgs collect: [:each | Rowan globalNamed: each ]) reject: [:each | each isNil ] ] ].
 	runner := (Rowan globalNamed: 'GsTestStatsCITestRunner')
-		runClasses: {Rowan globalNamed: 'SCIPassingTests'}
+		runClasses: classes
 		named: 'Stdout-testReportSuccess'.
-false
-ifTrue: [ 
-(Rowan globalNamed: 'GsTestStatsCITestReporterStdout') _setMethodBreak: #'printPass:' stepPoint: 3.
-].
 	reporter := (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner.
 	runner isSuccessful
 		ifFalse: [ self exitWithStatus: 1 ].
