@@ -6,7 +6,7 @@ Class {
 
 { #category : 'helpers' }
 SCIGemStoneTestReporterStdout >> newLine [
-	stream crlf
+	stream lf
 ]
 
 { #category : 'helpers' }

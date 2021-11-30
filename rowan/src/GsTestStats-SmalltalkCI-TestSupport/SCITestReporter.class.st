@@ -29,7 +29,7 @@ SCITestReporter class >> report: aSCITestRunner spec: aSCISpec on: aStream [
 
 { #category : 'helpers' }
 SCITestReporter >> newLine [
-	stream crlf
+	stream lf
 ]
 
 { #category : 'helpers' }

@@ -16,7 +16,7 @@ SCITestReporterStdoutTest class >> failureFixtureNonTravis [
 	^ '
 [1m[34m###############
 [1m[34m# Stdout-testReportFailure#
-[1m[34m# 8 Tests with 4 Failures and 1 Errors in s #
+[1m[34m# 8 Tests with 4 Failures and 2 Errors in s #
 [1m[34m###############
 [0m
 (3 tests passed)
@@ -132,7 +132,7 @@ SCITestReporterStdoutTest >> testReportFailure [
 		(Rowan globalNamed: 'SCIDummySpec')
 			named: 'Stdout-testReportFailure'
 			forClass: (Rowan globalNamed: 'SCIExcludedTests')).
-	stream := WriteStream on: (String new: 1000).
+	stream := WriteStream on: String new.
 	reporter := SCITestReporterStdout report: runner on: stream.
 	result := stream contents.
 	self assert: self class failureFixture matches: result ]

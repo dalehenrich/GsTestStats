@@ -38,3 +38,8 @@ SCIDummySpec >> classesToTest: anObject [
 SCIDummySpec >> failOnZeroTests [
 	^ self testing at: #failOnZeroTests ifAbsent: [ false ]
 ]
+
+{ #category : 'accessing' }
+SCIDummySpec >> failOnSCIDeprecationWarnings [
+	^ true
+]

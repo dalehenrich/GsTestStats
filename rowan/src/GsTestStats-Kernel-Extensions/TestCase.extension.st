@@ -22,6 +22,11 @@ TestCase >> expectedFailures [
 ]
 
 { #category : '*gsteststats-kernel-extensions' }
+TestCase >> fail: aDescriptionString [
+	^ self assert: false description: aDescriptionString
+]
+
+{ #category : '*gsteststats-kernel-extensions' }
 TestCase >> shouldPass [
 	"Unless the selector is in the list we get from #expectedFailures, we expect it to pass"
 
