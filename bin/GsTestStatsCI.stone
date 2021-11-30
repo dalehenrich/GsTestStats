@@ -1,0 +1,40 @@
+#!/usr/bin/env superdoit_stone
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]
+
+DESCRIPTION
+  Run the CI tests for GsTestStats
+
+OPTIONS
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+
+EXAMPLES
+  $basename --help
+  $basename -h
+  $basename --debug
+  $basename -D
+  $basename  
+-----
+%
+specUrls
+file:$GITHUB_WORKSPACE/rowan/specs/GsTestStats.ston
+%
+doit
+	| runner reporter stream result |
+	self preDoitSpecLoad: [:loadSpec |
+		loadSpec 
+			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
+			projectsHome: '$GITHUB_WORKSPACE/..'
+		].
+	runner := (Rowan globalNamed: 'GsTestStatsCITestRunner')
+		runClasses: {Rowan globalNamed: 'SCIPassingTest's}
+		named: 'Stdout-testReportSuccess')
+		yourself.
+	stream := WriteStream on: (String new: 1000).
+	reporter := (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner.
+	runner isSuccessful
+		ifFalse: [ self exitWithStatus: 1 ].
+	^ self noResult
+%

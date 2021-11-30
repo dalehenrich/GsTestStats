@@ -5,5 +5,5 @@ with github ci
 The basic goal here is to support:
 -[x] stdout reports
 -[ ] json test reports
--[ ] elimination of SmalltalkCISpec ... 
+-[x] elimination of SmalltalkCISpec ... 
 -[x] eliminate xml reporter
