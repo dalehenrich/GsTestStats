@@ -5,8 +5,16 @@ Class {
 }
 
 { #category : 'executing' }
-GsTestStatsCITestReporterStdout class >> report: aSCITestRunner spec: aSCISpec [
-	self report: aSCITestRunner spec: aSCISpec on: GsTestStatsCI stdout
+GsTestStatsCITestReporterStdout class >> report: aSCITestRunner [
+	self report: aSCITestRunner on: GsTestStatsCI stdout
+]
+
+{ #category : 'executing' }
+GsTestStatsCITestReporterStdout class >> report: aSCITestRunner on: aStream [
+	self new
+		runner: aSCITestRunner;
+		stream: aStream;
+		report
 ]
 
 { #category : 'printing' }

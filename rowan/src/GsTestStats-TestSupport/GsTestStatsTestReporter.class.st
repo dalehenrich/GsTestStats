@@ -11,28 +11,7 @@ Class {
 
 { #category : 'executing' }
 GsTestStatsTestReporter class >> report: aSCITestRunner [
-	^ self report: aSCITestRunner spec: SmalltalkCISpec new
-]
-
-{ #category : 'executing' }
-GsTestStatsTestReporter class >> report: aSCITestRunner on: aStream [
-	self report: aSCITestRunner spec: SmalltalkCISpec new on: aStream
-]
-
-{ #category : 'executing' }
-GsTestStatsTestReporter class >> report: aSCITestRunner spec: aSCISpec [
-	^ self new
-		runner: aSCITestRunner;
-		spec: aSCISpec;
-		report
-]
-
-{ #category : 'executing' }
-GsTestStatsTestReporter class >> report: aSCITestRunner spec: aSCISpec on: aStream [
-	self	 new
-		runner: aSCITestRunner;
-		stream: aStream;
-		report
+	^ self subclassResponsibility: #report:
 ]
 
 { #category : 'helpers' }
