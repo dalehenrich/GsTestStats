@@ -17,15 +17,7 @@ Class {
 
 { #category : 'defaults' }
 SmalltalkCISpec class >> defaultName [
-	| result |
-	result := GsTestStatsCI smalltalkSelection ifNil: [ 'unknown' ].
-	GsTestStatsCI isTravisBuild ifTrue: [
-		^ result, ' on Travis CI (', (GsTestStatsCI getEnv: 'TRAVIS_JOB_NUMBER') asString, ')' ].
-	GsTestStatsCI isAppVeyorBuild ifTrue: [
-		^ result, ' on AppVeyor (', (GsTestStatsCI getEnv: 'APPVEYOR_JOB_NAME') asString, ')' ].
-	GsTestStatsCI isGitLabCIBuild ifTrue: [ 
-		^ result, ' on GitLab CI (', (GsTestStatsCI getEnv: 'CI_PIPELINE_ID') asString, '.', (GsTestStatsCI getEnv: 'CI_JOB_ID') asString, ')' ].
-	^ result
+	^ GsTestStatsCI smalltalkSelection ifNil: [ 'unknown' ]
 ]
 
 { #category : 'instance creation' }

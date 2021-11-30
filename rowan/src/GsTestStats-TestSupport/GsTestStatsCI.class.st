@@ -143,6 +143,12 @@ GsTestStatsCI class >> printToStdout: msg [
 		flush
 ]
 
+{ #category : 'compatibility' }
+GsTestStatsCI class >> smalltalkSelection [
+
+	^ System stoneVersionReport at: 'gsVersion'
+]
+
 { #category : 'helpers' }
 GsTestStatsCI class >> stdout [
 	^ GsFile stdoutServer
