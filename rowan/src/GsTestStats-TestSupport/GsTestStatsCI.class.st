@@ -161,7 +161,7 @@ GsTestStatsCI class >> stringFor: aNumber maxDecimalPlaces: placesDesired [
 
 { #category : 'compatibility' }
 GsTestStatsCI class >> testRunnerClass [
-	^ SCIGemStoneTestRunner
+	^ GsTestStatsCITestRunner
 ]
 
 { #category : 'compatibility' }

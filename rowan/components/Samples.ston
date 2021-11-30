@@ -8,8 +8,7 @@ RwSimpleProjectLoadComponentV2 {
 	#packageNames : [
 		'GsTestStats-Kernel-Extensions',
 		'GsTestStats-Samples',
-		'GsTestStats-TestSupport',
-		'GsTestStats-SmalltalkCI-TestSupport'
+		'GsTestStats-TestSupport'
 	],
 	#conditionalPackageMapSpecs : {
 		'gemstone' : {

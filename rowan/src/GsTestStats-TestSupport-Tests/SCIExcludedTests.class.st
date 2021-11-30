@@ -1,7 +1,7 @@
 Class {
 	#name : 'SCIExcludedTests',
 	#superclass : 'TestCase',
-	#category : 'GsTestStats-SmalltalkCI-TestSupport-Tests'
+	#category : 'GsTestStats-TestSupport-Tests'
 }
 
 { #category : 'testing' }

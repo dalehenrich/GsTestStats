@@ -5,7 +5,7 @@ RwSimpleNestedProjectLoadComponentV2 {
 	#componentNames : [ ],
 	#packageNames : [
 		'GsTestStats-Tests',
-		'GsTestStats-SmalltalkCI-TestSupport-Tests'
+		'GsTestStats-TestSupport-Tests'
 	],
 	#comment : ''
 }
