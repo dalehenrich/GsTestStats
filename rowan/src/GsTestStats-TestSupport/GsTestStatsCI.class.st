@@ -87,6 +87,11 @@ GsTestStatsCI class >> deprecationWarnings [
 	^ DeprecationWarnings ifNil: [ DeprecationWarnings := OrderedCollection new ]
 ]
 
+{ #category : 'helpers' }
+GsTestStatsCI class >> deprecationWarnings: aCollection [
+	DeprecationWarnings := aCollection
+]
+
 { #category : 'ansi' }
 GsTestStatsCI class >> escape [
 	^ Character escape asString

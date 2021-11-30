@@ -160,7 +160,11 @@ SCITestRunnerResult >> time: anObject [
 { #category : 'accessing' }
 SCITestRunnerResult >> title [
 	| timeString skippedText |
-	timeString := GsTestStatsCI stringFor: self time maxDecimalPlaces: 0.
-	skippedText := self skipped ifTrue: [ 'skipped, ' ] ifFalse: [ '' ].
-	^ self asString, ' (', skippedText, timeString, 'ms)'
+	timeString := true
+		ifTrue: [ '' ]
+		ifFalse: [ GsTestStatsCI stringFor: self time maxDecimalPlaces: 0 ].
+	skippedText := self skipped
+		ifTrue: [ 'skipped, ' ]
+		ifFalse: [ '' ].
+	^ self asString , ' (' , skippedText , timeString , 'ms)'
 ]

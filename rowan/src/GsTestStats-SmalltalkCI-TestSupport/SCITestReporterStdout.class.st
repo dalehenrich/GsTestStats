@@ -18,12 +18,12 @@ SCITestReporterStdout >> printBanner: aTitle color: aColor [
 SCITestReporterStdout >> printBanner: aTitle subtitle: aSubtitle color: aColor [
 	| textLength separator |
 	textLength := (aTitle size max: aSubtitle size).
-	separator := String new: 15 withAll: $#.
+	separator := String new: (textLength + 4) withAll: $#. "+ 4 for `#  #` (see below)"
 	self newLine;
 		setModeBold; print: aColor, separator; newLine;
-		setModeBold; print: aColor, '# ', aTitle, '#'; newLine.
+		setModeBold; print: aColor, '# ', (self rightPad: aTitle to: textLength), ' #'; newLine.
 	aSubtitle ifNotEmpty: [
-		self setModeBold; print: aColor, '# ', aSubtitle, ' #'; newLine ].
+		self setModeBold; print: aColor, '# ', (self rightPad: aSubtitle to: textLength), ' #'; newLine ].
 	self
 		setModeBold; print: aColor, separator; newLine;
 		resetMode
@@ -33,7 +33,6 @@ SCITestReporterStdout >> printBanner: aTitle subtitle: aSubtitle color: aColor [
 SCITestReporterStdout >> printDeprecationWarnings [
 	GsTestStatsCI deprecationWarnings ifNotEmpty: [
     self
-      newLine;
       printTravisFold: 'deprecation_warnings' action: 'start';
       setModeBoldRed;
       print: 'smalltalkCI Deprecation Warnings';
@@ -66,7 +65,6 @@ SCITestReporterStdout >> printException: aResult [
 		print: (aResult ansiTitleContractedTo: 70);
 		newLine;
 		setModeBold;
-		print: aResult testError asString;
 		resetMode.
 	aResult stack ifNotNil: [
 		self newLine;

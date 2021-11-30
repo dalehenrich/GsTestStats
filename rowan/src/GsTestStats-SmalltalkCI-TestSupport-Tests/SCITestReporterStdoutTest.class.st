@@ -14,10 +14,10 @@ SCITestReporterStdoutTest class >> failureFixture [
 { #category : 'fixtures' }
 SCITestReporterStdoutTest class >> failureFixtureNonTravis [
 	^ '
-[1m[34m###############
-[1m[34m# Stdout-testReportFailure#
-[1m[34m# 8 Tests with 4 Failures and 2 Errors in s #
-[1m[34m###############
+[1m[34m#############################################
+[1m[34m# Stdout-testReportFailure                  #
+[1m[34m# 8 Tests with 4 Failures and 1 Errors in s #
+[1m[34m#############################################
 [0m
 (3 tests passed)
 [1m
@@ -59,10 +59,10 @@ SCIExcludedTests
 { #category : 'fixtures' }
 SCITestReporterStdoutTest class >> failureFixtureTravis [
 	^ '
-[1m[34m###############
-[1m[34m# Stdout-testReportFailure#
+[1m[34m#############################################
+[1m[34m# Stdout-testReportFailure                  #
 [1m[34m# 8 Tests with 4 Failures and 1 Errors in s #
-[1m[34m###############
+[1m[34m#############################################
 [0m
 (3 tests passed)
 [1m
@@ -92,10 +92,10 @@ SCIExcludedTests
 { #category : 'fixtures' }
 SCITestReporterStdoutTest class >> successFixture [
 	^ '
-[1m[34m#############
-[1m[34m# Stdout-testReportSuccess#
+[1m[34m#############################################
+[1m[34m# Stdout-testReportSuccess                  #
 [1m[34m# 5 Tests with 0 Failures and 0 Errors in s #
-[1m[34m#############
+[1m[34m#############################################
 [0m
 (5 tests passed)
 [1m

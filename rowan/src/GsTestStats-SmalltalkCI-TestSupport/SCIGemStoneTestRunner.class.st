@@ -15,5 +15,12 @@ SCIGemStoneTestRunner >> serializeError: error of: aTestCase [
 
 { #category : 'private' }
 SCIGemStoneTestRunner >> stackTraceString: err of: aTestCase [
-	^ GsProcess stackReportToLevel: 100
+	true
+		ifTrue: [ ^ nil ]
+		ifFalse: [ ^ GsProcess stackReportToLevel: 100 ]
+]
+
+{ #category : 'accessing' }
+SCIGemStoneTestRunner >> suiteTimeString [
+	^ 's'
 ]
