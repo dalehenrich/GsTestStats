@@ -26,12 +26,11 @@ doit
 	self preDoitSpecLoad: [:loadSpec |
 		loadSpec 
 			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
-			projectsHome: '$GITHUB_WORKSPACE/..'
+			projectsHome: '$GITHUB_WORKSPACE/..'.
 		].
 	runner := (Rowan globalNamed: 'GsTestStatsCITestRunner')
-		runClasses: {Rowan globalNamed: 'SCIPassingTest's}
-		named: 'Stdout-testReportSuccess')
-		yourself.
+		runClasses: {Rowan globalNamed: 'SCIPassingTests'}
+		named: 'Stdout-testReportSuccess'.
 	stream := WriteStream on: (String new: 1000).
 	reporter := (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner.
 	runner isSuccessful

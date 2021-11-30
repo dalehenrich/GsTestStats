@@ -90,10 +90,9 @@ GsTestStatsTest >> assert: aFixture matches: aString [
 { #category : 'tests' }
 GsTestStatsTest >> testStdoutReportSuccess [
 	| runner reporter stream result |
-	runner := (GsTestStatsCITestRunner
+	runner := GsTestStatsCITestRunner
 		runClasses: {SCIPassingTests}
-		named: 'Stdout-testReportSuccess')
-		yourself.
+		named: 'Stdout-testReportSuccess'.
 	stream := WriteStream on: (String new: 1000).
 	reporter := GsTestStatsCITestReporterStdout report: runner on: stream.
 	result := stream contents.
