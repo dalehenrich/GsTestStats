@@ -43,9 +43,9 @@ doit
 				ifTrue: [ {Rowan globalNamed: 'SCIPassingTests'} ]
 				ifFalse: [ 
 					| classNames |
-					classNames := self positonalArgs isEmpty
+					classNames := self positionalArgs isEmpty
 						ifTrue: [ {'GsTestStatsTest'} ]
-						ifFalse: [ self positonalArgs ].
+						ifFalse: [ self positionalArgs ].
 					(classNames collect: [:each | Rowan globalNamed: each ]) reject: [:each | each isNil ] ] ].
 	runnerClass := Rowan globalNamed: 'GsTestStatsCITestRunner'.
 	runner := self debug
