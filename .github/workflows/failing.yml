@@ -1,5 +1,5 @@
 # test .solo, .stone and .topaz scripts
-name: CI
+name: FAILING
 
 on: 
   push:

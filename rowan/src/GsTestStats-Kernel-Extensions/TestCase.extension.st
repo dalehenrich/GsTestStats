@@ -17,6 +17,11 @@ TestCase class >> addToSuiteFromSelectors: suite [
 ]
 
 { #category : '*gsteststats-kernel-extensions' }
+TestCase >> debug: aResult [
+	aResult debugCase: self
+]
+
+{ #category : '*gsteststats-kernel-extensions' }
 TestCase >> expectedFailures [
 	^ Array new
 ]

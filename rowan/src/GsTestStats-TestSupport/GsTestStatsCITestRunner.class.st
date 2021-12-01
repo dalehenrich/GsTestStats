@@ -10,6 +10,24 @@ Class {
 	#category : 'GsTestStats-TestSupport'
 }
 
+{ #category : 'running' }
+GsTestStatsCITestRunner class >> debugClasses: aCollectionOfClasses named: aSuiteName [
+	| suite classes |
+	suite := TestSuite named: aSuiteName.
+	classes := (aCollectionOfClasses
+		select: [ :each | (each includesBehavior: TestCase) and: [ each isAbstract not ] ])
+		asSortedCollection: [ :a :b | a name <= b name ].
+	classes do: [ :each | each addToSuiteFromSelectors: suite ].
+	^ self debugSuite: suite
+]
+
+{ #category : 'running' }
+GsTestStatsCITestRunner class >> debugSuite: aTestSuite [
+	^ self new
+		initializeOn: aTestSuite;
+		debug
+]
+
 { #category : 'constants' }
 GsTestStatsCITestRunner class >> errorExceptions [
 	^ Halt, Error, TestFailure
@@ -53,6 +71,32 @@ GsTestStatsCITestRunner class >> skipExceptions [
 { #category : 'running' }
 GsTestStatsCITestRunner >> basicRunCase: aTestCase [
 	aTestCase runCase	
+]
+
+{ #category : 'running' }
+GsTestStatsCITestRunner >> debug [
+	[ 
+	self setUp.
+	suiteTime := GsTestStatsCI timeToRun: [ self debugAll ] ]
+		ensure: [ self tearDown ]
+]
+
+{ #category : 'running' }
+GsTestStatsCITestRunner >> debugAll [
+	suite tests do: [ :each | each debug: self ]
+]
+
+{ #category : 'running' }
+GsTestStatsCITestRunner >> debugCase: aTestCase [
+	| result |
+	GsTestStatsCI printDebug: aTestCase asString.
+	result := GsTestStatsCITestRunnerResult new
+		testCase: aTestCase;
+		yourself.
+	self basicRunCase: aTestCase.
+	self printProgress: result.
+	(results at: aTestCase class ifAbsentPut: [ OrderedCollection new ])
+		add: result
 ]
 
 { #category : 'accessing' }

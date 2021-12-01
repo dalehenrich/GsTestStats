@@ -20,16 +20,17 @@ EXAMPLES
   $basename --help
   $basename -h
   $basename --debug
-  $basename -D GsTestStatsTest # run tests for classes listed on command line
-  $basename -D --fail          # run tests that pass and fail
-  $basename -D --pass          # run tests that pass
+  $basename -D                  # run tests for default class list (GsTestStatsTest)
+  $basename -D SCIExcludedTests # run tests for classes listed on command line
+  $basename -D --fail           # run tests that pass and fail
+  $basename -D --pass           # run tests that pass
 -----
 %
 specUrls
 file:$GITHUB_WORKSPACE/rowan/specs/GsTestStats.ston
 %
 doit
-	| runner reporter result classes |
+	| runnerClass runner reporter result classes |
 	self preDoitSpecLoad: [:loadSpec |
 		loadSpec 
 			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
@@ -41,10 +42,21 @@ doit
 			self pass
 				ifTrue: [ {Rowan globalNamed: 'SCIPassingTests'} ]
 				ifFalse: [ 
-					(self positionalArgs collect: [:each | Rowan globalNamed: each ]) reject: [:each | each isNil ] ] ].
-	runner := (Rowan globalNamed: 'GsTestStatsCITestRunner')
-		runClasses: classes
-		named: 'Stdout-testReportSuccess'.
+					| classNames |
+					classNames := self positonalArgs isEmpty
+						ifTrue: [ {'GsTestStatsTest'} ]
+						ifFalse: [ self positonalArgs ].
+					(classNames collect: [:each | Rowan globalNamed: each ]) reject: [:each | each isNil ] ] ].
+	runnerClass := Rowan globalNamed: 'GsTestStatsCITestRunner'.
+	runner := self debug
+		ifTrue: [
+			runnerClass 
+				debugClasses: classes
+				named: 'Stdout-testReportSuccess' ]
+		ifFalse: [
+			runnerClass 
+				runClasses: classes
+				named: 'Stdout-testReportSuccess' ].
 	reporter := (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner.
 	runner isSuccessful
 		ifFalse: [ self exitWithStatus: 1 ].
