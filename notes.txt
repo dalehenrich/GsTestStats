@@ -1,9 +1,0 @@
-The test script will directly manipulate the test runner and reporter with no
-need for a test spec. stdout and json test reports will be used locally and 
-with github ci
-
-The basic goal here is to support:
--[x] stdout reports
--[ ] json test reports
--[x] elimination of SmalltalkCISpec ... 
--[x] eliminate xml reporter
