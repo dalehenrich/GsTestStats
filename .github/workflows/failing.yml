@@ -35,11 +35,11 @@ jobs:
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
           set +e
-          ./bin/GsTestStatsCI.solo --pass
+          ./bin/GsTestStatsCI.solo --fail
           exitCode=$?
           set -e
           if [ "$exitCode" = "0" ] ; then
-            echo "Unexpected success"
+            echo "Unexpected success... ./bin/GsTestStatsCI.solo should exit with non-zero exit code"
             exit 1
           fi
         env:
