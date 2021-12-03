@@ -35,7 +35,7 @@ jobs:
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
           ./bin/GsTestStatsCI.solo --fail
-          exitCode=$"
+          exitCode=$?
           if [ "$exitCode" = "0" ] ; then
             echo "Unexpected success"
             exit 1
