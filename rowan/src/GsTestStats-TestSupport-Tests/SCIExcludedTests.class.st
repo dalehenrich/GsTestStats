@@ -5,11 +5,6 @@ Class {
 }
 
 { #category : 'testing' }
-SCIExcludedTests >> expectedFailures [
-	^ #( testShouldFail testShouldPassUnexpectedly )
-]
-
-{ #category : 'testing' }
 SCIExcludedTests >> testAssertError [
 	self assert: 3 equals: 4
 ]

@@ -58,18 +58,22 @@ GsTestStatsCITestReporterTestSuiteSample >> printNotPassingResults [
 			className := class name asString.
 			(results select: [ :result | result errored ])
 				do: [ :erorredTestRunnerResult | 
-					GsTestCaseSample new
-						className: className;
-						selector: erorredTestRunnerResult testCase selector;
-						setStatusErrored;
-						yourself ].
+					self testSuiteSample
+						addTestCaseSample:
+							(GsTestCaseSample new
+								className: className;
+								selector: erorredTestRunnerResult testCase selector;
+								setStatusErrored;
+								yourself) ].
 			(results select: [ :result | result failed ])
 				do: [ :failedTestRunnerResult | 
-					GsTestCaseSample new
-						className: className;
-						selector: failedTestRunnerResult testCase selector;
-						setStatusFailed;
-						yourself ] ]
+					self testSuiteSample
+						addTestCaseSample:
+							(GsTestCaseSample new
+								className: className;
+								selector: failedTestRunnerResult testCase selector;
+								setStatusFailed;
+								yourself) ] ]
 ]
 
 { #category : 'printing' }

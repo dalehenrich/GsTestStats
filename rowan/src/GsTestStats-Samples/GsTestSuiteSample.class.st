@@ -578,6 +578,18 @@ GsTestSuiteSample >> passed: passedBlock failed: failedBlock errored: erroredBlo
 		do: [ :testCaseSample | testCaseSample passed: passedBlock failed: failedBlock errored: erroredBlock ]
 ]
 
+{ #category : 'copying' }
+GsTestSuiteSample >> postCopy [
+	resultsSummary := resultsSummary copy.
+	testCases := testCases
+		collect: [ :each | 
+			| copy |
+			copy := each copy.
+			copy suite: self.
+			copy ].
+	deprecationWarnings := deprecationWarnings collect: [ :each | each copy ]
+]
+
 { #category : 'printing' }
 GsTestSuiteSample >> printOn: aStream [ 
 	aStream

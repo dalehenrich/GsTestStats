@@ -15,19 +15,27 @@ GsTestStatsTest class >> canonicalTimeStamp [
 ]
 
 { #category : 'fixtures' }
+GsTestStatsTest class >> compareToSelfSuccessJson [
+	^ 'Diffs for PASSES: tests: + now passing;  ++ new passing test; - removed test [EFP is indication of previous test status]
+Diffs for FAILURES: tests: + now failing;  ++ new failing test; - removed test [EFP is indication of previous test status]
+Diffs for ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [EFP is indication of previous test status]
+'
+]
+
+{ #category : 'fixtures' }
 GsTestStatsTest class >> failureFixture [
 	^ '
-[1m[34m#############################################
+[1m[34m#################################################
 [1m[34m# Stdout-testReportFailure                  #
-[1m[34m# 8 Tests with 4 Failures and 1 Errors in s #
-[1m[34m#############################################
+[1m[34m# 8 Tests with 3 Failures and 2 Errors in 0.00s #
+[1m[34m#################################################
 [0m
 (3 tests passed)
 [1m
 SCIExcludedTests
 [0m[32m ✓[0m #testDeprecation (ms)[0m
-[32m ✓[0m #testShouldFail (ms)[0m
 [32m ✓[0m #testShouldPass (ms)[0m
+[32m ✓[0m #testShouldPassUnexpectedly (ms)[0m
 [1m[31m#########################
 [1m[31m# 5 tests did not pass: #
 [1m[31m#########################
@@ -36,7 +44,7 @@ SCIExcludedTests
 [0m[1m[33m ✗ #testAssertError (ms)[0m
 [0m[1m[31m ✗ #testError (ms)[0m
 [0m[1m[33m ✗ #testFailure (ms)[0m
-[0m[1m[33m ✗ #testShouldPassUnexpectedly (ms)[0m
+[0m[1m[33m ✗ #testShouldFail (ms)[0m
 [0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThat...playedCorrectlyInATravisLog (ms)[0m
 [1m[31m###########
 [1m[31m# Summary #
@@ -46,11 +54,13 @@ SCIExcludedTests
 [0m[33m ✗ #testAssertError (ms)[0m
 [31m ✗ #testError (ms)[0m
 [33m ✗ #testFailure (ms)[0m
-[33m ✗ #testShouldPassUnexpectedly (ms)[0m
+[33m ✗ #testShouldFail (ms)[0m
 [33m ✗ #testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog (ms)[0m
 [1m[31msmalltalkCI Deprecation Warnings[0m
  - SCIExcludedTests>>testDeprecation (This is just a test)
-[1m[31m  Executed 8 Tests with 4 Failures and 1 Errors in s.[0m
+
+
+[1m[31m  Executed 8 Tests with 3 Failures and 2 Errors in 0.00s.[0m
 '
 ]
 
@@ -298,6 +308,37 @@ GsTestStatsTest >> assert: aFixture matches: aString [
 ]
 
 { #category : 'tests' }
+GsTestStatsTest >> testDiferentSampleComparison [
+	"copy a sample and change a passing test to failing, a passing test to erroring, a failing test to passing and an erroring test to failing"
+
+	| sample1 sample2 stream result sampleDict |
+	sampleDict := STON fromStream: self class successJson readStream.
+	sample1 := GsTestSuiteSample fromDictionary: sampleDict.
+	sample2 := sample1 copy.
+
+	sample2 testCases detect: [ :each | each selector == #'xxx' ].
+	self halt.
+	stream := WriteStream on: String new.
+	sample1 compareTo: sample2 on: stream.
+	result := stream contents.
+
+	self assert: self class compareToErrorsAndFailureDiffs matches: result
+]
+
+{ #category : 'tests' }
+GsTestStatsTest >> testEquivalentSampleComparison [
+	| sample1 stream result sampleDict |
+	sampleDict := STON fromStream: self class successJson readStream.
+	sample1 := GsTestSuiteSample fromDictionary: sampleDict.
+
+	stream := WriteStream on: String new.
+	sample1 compareTo: sample1 on: stream.
+	result := stream contents.
+
+	self assert: self class compareToSelfSuccessJson matches: result
+]
+
+{ #category : 'tests' }
 GsTestStatsTest >> testStdoutReportSuccess [
 	| runner reporter stream result |
 	runner := GsTestStatsCITestRunner
@@ -332,7 +373,7 @@ GsTestStatsTest >> testTestSuiteSampleReportSuccess [
 	| runner reporter stream |
 	runner := GsTestStatsCITestRunner
 		runClasses: {SCIPassingTests}
-		named: 'Stdout-testReportSuccess'.
+		named: 'TestSuiteSample-testReportSuccess'.
 	reporter := GsTestStatsCITestReporterTestSuiteSample report: runner.
 	stream := WriteStream on: String new.
 	reporter testSuiteSample timeStamp: self class canonicalTimeStamp.
@@ -346,7 +387,7 @@ GsTestStatsTest >> testTestSuiteSampleReportSuccessWithBranch [
 	| runner reporter stream |
 	runner := GsTestStatsCITestRunner
 		runClasses: {SCIPassingTests}
-		named: 'Stdout-testReportSuccess'.
+		named: 'TestSuiteSample-testReportSuccessWithBranch'.
 	reporter := GsTestStatsCITestReporterTestSuiteSample
 		report: runner
 		branch: 'master'.
@@ -362,7 +403,7 @@ GsTestStatsTest >> testTestSuiteSampleReportSuccessWithBranchAndCommitSha [
 	| runner reporter stream |
 	runner := GsTestStatsCITestRunner
 		runClasses: {SCIPassingTests}
-		named: 'Stdout-testReportSuccess'.
+		named: 'TestSuiteSample-testReportSuccessWithBranchAndCommitSha'.
 	reporter := GsTestStatsCITestReporterTestSuiteSample
 		report: runner
 		branch: 'v1'
@@ -384,7 +425,7 @@ GsTestStatsTest >> testTestSuiteSampleTestFailure [
 	GsTestStatsCI deprecatedReset.
 	runner := (GsTestStatsCITestRunner
 		runClasses: {SCIExcludedTests}
-		named: 'Stdout-testReportFailure')
+		named: 'TestSuiteSample-testReportFailure')
 		failOnSCIDeprecationWarnings: true;
 		yourself.
 	reporter := GsTestStatsCITestReporterTestSuiteSample report: runner.
