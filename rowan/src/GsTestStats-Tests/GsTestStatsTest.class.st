@@ -76,15 +76,21 @@ GsTestStatsTest class >> failureJson [
 	"notes" : "",
 	"properties" : { },
 	"resultsSummary" : {
-		"errors" : 1,
-		"failures" : 4,
+		"errors" : 2,
+		"failures" : 3,
 		"passed" : 3,
-		"summary" : "8 Tests with 4 Failures and 1 Errors in 0.00s",
+		"summary" : "8 Tests with 3 Failures and 2 Errors in 0.00s",
 		"tests" : 8,
 		"time" : 0.0
 	},
-	"suiteName" : "Stdout-testReportFailure",
+	"suiteName" : "TestSuiteSample-testReportFailure",
 	"testCases" : [
+		{
+			"className" : "SCIExcludedTests",
+			"status" : "failures",
+			"selector" : "testAssertError",
+			"time" : "0"
+		},
 		{
 			"className" : "SCIExcludedTests",
 			"status" : "passed",
@@ -93,7 +99,19 @@ GsTestStatsTest class >> failureJson [
 		},
 		{
 			"className" : "SCIExcludedTests",
-			"status" : "passed",
+			"status" : "errors",
+			"selector" : "testError",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedTests",
+			"status" : "failures",
+			"selector" : "testFailure",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedTests",
+			"status" : "errors",
 			"selector" : "testShouldFail",
 			"time" : "0"
 		},
@@ -101,6 +119,18 @@ GsTestStatsTest class >> failureJson [
 			"className" : "SCIExcludedTests",
 			"status" : "passed",
 			"selector" : "testShouldPass",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedTests",
+			"status" : "passed",
+			"selector" : "testShouldPassUnexpectedly",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedTests",
+			"status" : "failures",
+			"selector" : "testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog",
 			"time" : "0"
 		}
 	],
@@ -145,7 +175,7 @@ GsTestStatsTest class >> successJson [
 		"tests" : 5,
 		"time" : 0.0
 	},
-	"suiteName" : "Stdout-testReportSuccess",
+	"suiteName" : "TestSuiteSample-testReportSuccess",
 	"testCases" : [
 		{
 			"className" : "SCIPassingTests",
@@ -199,7 +229,7 @@ GsTestStatsTest class >> successJsonWithBranch [
 		"tests" : 5,
 		"time" : 0.0
 	},
-	"suiteName" : "Stdout-testReportSuccess",
+	"suiteName" : "TestSuiteSample-testReportSuccess",
 	"testCases" : [
 		{
 			"className" : "SCIPassingTests",
@@ -253,7 +283,7 @@ GsTestStatsTest class >> successJsonWithBranchAndCommitSha [
 		"tests" : 5,
 		"time" : 0.0
 	},
-	"suiteName" : "Stdout-testReportSuccess",
+	"suiteName" : "TestSuiteSample-testReportSuccess",
 	"testCases" : [
 		{
 			"className" : "SCIPassingTests",
