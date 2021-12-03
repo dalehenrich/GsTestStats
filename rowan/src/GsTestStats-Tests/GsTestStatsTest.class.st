@@ -5,6 +5,11 @@ Class {
 }
 
 { #category : 'fixtures' }
+GsTestStatsTest class >> canonicalGemStoneVersion [
+	^ '3.7.0'
+]
+
+{ #category : 'fixtures' }
 GsTestStatsTest class >> canonicalTimeStamp [
 	^ DateAndTime fromString: '2021-12-02T15:13:56.999921-08:00'
 ]
@@ -61,11 +66,11 @@ GsTestStatsTest class >> failureJson [
 	"notes" : "",
 	"properties" : { },
 	"resultsSummary" : {
-		"tests" : 8,
-		"summary" : "8 Tests with 4 Failures and 1 Errors in 0.00s",
-		"passed" : 3,
 		"errors" : 1,
 		"failures" : 4,
+		"passed" : 3,
+		"summary" : "8 Tests with 4 Failures and 1 Errors in 0.00s",
+		"tests" : 8,
 		"time" : 0.0
 	},
 	"suiteName" : "Stdout-testReportFailure",
@@ -118,24 +123,16 @@ GsTestStatsTest class >> successJson [
 	^ '{
 	"branch" : "",
 	"commitSha" : "",
-	"deprecationWarnings" : [
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)"
-	],
+	"deprecationWarnings" : [ ],
 	"gsVersion" : "3.7.0",
 	"notes" : "",
 	"properties" : { },
 	"resultsSummary" : {
-		"tests" : 5,
-		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
-		"passed" : 5,
 		"errors" : 0,
 		"failures" : 0,
+		"passed" : 5,
+		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
+		"tests" : 5,
 		"time" : 0.0
 	},
 	"suiteName" : "Stdout-testReportSuccess",
@@ -180,24 +177,16 @@ GsTestStatsTest class >> successJsonWithBranch [
 	^ '{
 	"branch" : "master",
 	"commitSha" : "",
-	"deprecationWarnings" : [
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)"
-	],
+	"deprecationWarnings" : [ ],
 	"gsVersion" : "3.7.0",
 	"notes" : "",
 	"properties" : { },
 	"resultsSummary" : {
-		"tests" : 5,
-		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
-		"passed" : 5,
 		"errors" : 0,
 		"failures" : 0,
+		"passed" : 5,
+		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
+		"tests" : 5,
 		"time" : 0.0
 	},
 	"suiteName" : "Stdout-testReportSuccess",
@@ -242,24 +231,16 @@ GsTestStatsTest class >> successJsonWithBranchAndCommitSha [
 	^ '{
 	"branch" : "v1",
 	"commitSha" : "d736a2425",
-	"deprecationWarnings" : [
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)",
-		"SCIExcludedTests>>testDeprecation (This is just a test)"
-	],
+	"deprecationWarnings" : [ ],
 	"gsVersion" : "3.7.0",
 	"notes" : "",
 	"properties" : { },
 	"resultsSummary" : {
-		"tests" : 5,
-		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
-		"passed" : 5,
 		"errors" : 0,
 		"failures" : 0,
+		"passed" : 5,
+		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
+		"tests" : 5,
 		"time" : 0.0
 	},
 	"suiteName" : "Stdout-testReportSuccess",
@@ -355,6 +336,7 @@ GsTestStatsTest >> testTestSuiteSampleReportSuccess [
 	reporter := GsTestStatsCITestReporterTestSuiteSample report: runner.
 	stream := WriteStream on: String new.
 	reporter testSuiteSample timeStamp: self class canonicalTimeStamp.
+	reporter testSuiteSample gsVersion: self class canonicalGemStoneVersion.
 	reporter testSuiteSample exportJsonTo: stream.
 	self assert: self class successJson matches: stream contents
 ]
@@ -370,6 +352,7 @@ GsTestStatsTest >> testTestSuiteSampleReportSuccessWithBranch [
 		branch: 'master'.
 	stream := WriteStream on: String new.
 	reporter testSuiteSample timeStamp: self class canonicalTimeStamp.
+	reporter testSuiteSample gsVersion: self class canonicalGemStoneVersion.
 	reporter testSuiteSample exportJsonTo: stream.
 	self assert: self class successJsonWithBranch matches: stream contents
 ]
@@ -386,6 +369,7 @@ GsTestStatsTest >> testTestSuiteSampleReportSuccessWithBranchAndCommitSha [
 		commitSha: 'd736a2425'.
 	stream := WriteStream on: String new.
 	reporter testSuiteSample timeStamp: self class canonicalTimeStamp.
+	reporter testSuiteSample gsVersion: self class canonicalGemStoneVersion.
 	reporter testSuiteSample exportJsonTo: stream.
 	self
 		assert: self class successJsonWithBranchAndCommitSha
@@ -406,6 +390,7 @@ GsTestStatsTest >> testTestSuiteSampleTestFailure [
 	reporter := GsTestStatsCITestReporterTestSuiteSample report: runner.
 	stream := WriteStream on: String new.
 	reporter testSuiteSample timeStamp: self class canonicalTimeStamp.
+	reporter testSuiteSample gsVersion: self class canonicalGemStoneVersion.
 	reporter testSuiteSample exportJsonTo: stream.
 	self assert: self class failureJson matches: stream contents ]
 		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]

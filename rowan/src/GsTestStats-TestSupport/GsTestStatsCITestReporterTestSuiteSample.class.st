@@ -118,12 +118,12 @@ GsTestStatsCITestReporterTestSuiteSample >> printStart [
 		gsVersion: (System gemVersionAt: #'gsVersion');
 		testCases: {};
 		resultsSummary:
-				(Dictionary new
+				(GsTonelOrderedDictionary new
+						at: #'errors' put: runner erroredTests;
+						at: #'failures' put: runner failedTests;
+						at: #'passed' put: runner passingTests;
 						at: #'summary' put: runner summary;
 						at: #'tests' put: runner totalTests;
-						at: #'failures' put: runner failedTests;
-						at: #'errors' put: runner erroredTests;
-						at: #'passed' put: runner passingTests;
 						at: #'time' put: runner suiteTime / 1000.0;
 						yourself).
 ]
