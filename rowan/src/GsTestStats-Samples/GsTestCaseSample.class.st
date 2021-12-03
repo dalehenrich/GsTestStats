@@ -13,12 +13,12 @@ Class {
 
 { #category : 'accessing' }
 GsTestCaseSample class >> erroredStatus [
-	^ 'errors'
+	^ #'errors'
 ]
 
 { #category : 'accessing' }
 GsTestCaseSample class >> failedStatus [
-	^ 'failures'
+	^ #'failures'
 ]
 
 { #category : 'instance creation' }
@@ -38,7 +38,7 @@ GsTestCaseSample class >> new [
 
 { #category : 'accessing' }
 GsTestCaseSample class >> passedStatus [
-	^ 'passed'
+	^ #'passed'
 ]
 
 { #category : 'accessing' }

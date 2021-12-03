@@ -5,6 +5,84 @@ Class {
 }
 
 { #category : 'fixtures' }
+GsTestStatsTest class >> baselineTestForComparison [
+	^ '{
+	"branch" : "",
+	"commitSha" : "",
+	"deprecationWarnings" : [ ],
+	"gsVersion" : "3.7.0",
+	"notes" : "",
+	"properties" : { },
+	"resultsSummary" : {
+		"errors" : 3,
+		"failures" : 3,
+		"passed" : 3,
+		"summary" : "9 Tests with 3 Failures and 3 Errors in 0.00s",
+		"tests" : 9,
+		"time" : 0.0
+	},
+	"suiteName" : "TestSuiteSample-testForComparison",
+	"testCases" : [
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "errors",
+			"selector" : "testError_1",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "errors",
+			"selector" : "testError_2",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "errors",
+			"selector" : "testError_3",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "failures",
+			"selector" : "testFail_1",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "failures",
+			"selector" : "testFail_2",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "failures",
+			"selector" : "testFail_3",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "passed",
+			"selector" : "testPass_1",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "passed",
+			"selector" : "testPass_2",
+			"time" : "0"
+		},
+		{
+			"className" : "SCITestsForComparison",
+			"status" : "passed",
+			"selector" : "testPass_3",
+			"time" : "0"
+		}
+	],
+	"timeStamp" : "2021-12-02T15:13:56.999921-08:00"
+}'
+]
+
+{ #category : 'fixtures' }
 GsTestStatsTest class >> canonicalGemStoneVersion [
 	^ '3.7.0'
 ]
@@ -15,7 +93,32 @@ GsTestStatsTest class >> canonicalTimeStamp [
 ]
 
 { #category : 'fixtures' }
-GsTestStatsTest class >> compareToSelfSuccessJson [
+GsTestStatsTest class >> compareJsonToAddedAndRemovedTestCases [
+	^ 'Diffs for PASSES: tests: + now passing;  ++ new passing test; - removed test [EFP is indication of previous test status]
+ -P	SCITestsForComparison debug: #testPass_2
+Diffs for FAILURES: tests: + now failing;  ++ new failing test; - removed test [EFP is indication of previous test status]
+ -F	SCITestsForComparison debug: #testFail_2
+Diffs for ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [EFP is indication of previous test status]
+ -E	SCITestsForComparison debug: #testError_2
+'
+]
+
+{ #category : 'fixtures' }
+GsTestStatsTest class >> compareJsonToPassErrorAndFailureChanges [
+	^ 'Diffs for PASSES: tests: + now passing;  ++ new passing test; - removed test [EFP is indication of previous test status]
+ +E	SCITestsForComparison debug: #testError_3
+ +F	SCITestsForComparison debug: #testFail_3
+Diffs for FAILURES: tests: + now failing;  ++ new failing test; - removed test [EFP is indication of previous test status]
+ +E	SCITestsForComparison debug: #testError_2
+ +P	SCITestsForComparison debug: #testPass_2
+Diffs for ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [EFP is indication of previous test status]
+ +F	SCITestsForComparison debug: #testFail_2
+ +P	SCITestsForComparison debug: #testPass_3
+'
+]
+
+{ #category : 'fixtures' }
+GsTestStatsTest class >> compareJsonToSelf [
 	^ 'Diffs for PASSES: tests: + now passing;  ++ new passing test; - removed test [EFP is indication of previous test status]
 Diffs for FAILURES: tests: + now failing;  ++ new failing test; - removed test [EFP is indication of previous test status]
 Diffs for ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [EFP is indication of previous test status]
@@ -24,9 +127,13 @@ Diffs for ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [
 
 { #category : 'fixtures' }
 GsTestStatsTest class >> failureFixture [
+	"
+		'/home/dhenrich/rogue/_homes/rogue/_home/shared/repos/GsTestStats/ex.txt' 
+			asFileReference writeStreamDo: [:strm | strm nextPutAll: self ]
+	"
 	^ '
 [1m[34m#################################################
-[1m[34m# Stdout-testReportFailure                  #
+[1m[34m# Stdout-testReportFailure                      #
 [1m[34m# 8 Tests with 3 Failures and 2 Errors in 0.00s #
 [1m[34m#################################################
 [0m
@@ -36,16 +143,19 @@ SCIExcludedTests
 [0m[32m ✓[0m #testDeprecation (ms)[0m
 [32m ✓[0m #testShouldPass (ms)[0m
 [32m ✓[0m #testShouldPassUnexpectedly (ms)[0m
+
 [1m[31m#########################
 [1m[31m# 5 tests did not pass: #
 [1m[31m#########################
 [0m[1m
 SCIExcludedTests
 [0m[1m[33m ✗ #testAssertError (ms)[0m
-[0m[1m[31m ✗ #testError (ms)[0m
-[0m[1m[33m ✗ #testFailure (ms)[0m
-[0m[1m[33m ✗ #testShouldFail (ms)[0m
-[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThat...playedCorrectlyInATravisLog (ms)[0m
+[1m[0m[1m[31m ✗ #testError (ms)[0m
+[1m[0m[1m[33m ✗ #testFailure (ms)[0m
+[1m[0m[1m[31m ✗ #testShouldFail (ms)[0m
+[1m[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThat...splayedCorrectlyInATravisLog (ms)[0m
+[1m[0m
+
 [1m[31m###########
 [1m[31m# Summary #
 [1m[31m###########
@@ -54,13 +164,14 @@ SCIExcludedTests
 [0m[33m ✗ #testAssertError (ms)[0m
 [31m ✗ #testError (ms)[0m
 [33m ✗ #testFailure (ms)[0m
-[33m ✗ #testShouldFail (ms)[0m
+[31m ✗ #testShouldFail (ms)[0m
 [33m ✗ #testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog (ms)[0m
 [1m[31msmalltalkCI Deprecation Warnings[0m
  - SCIExcludedTests>>testDeprecation (This is just a test)
 
 
 [1m[31m  Executed 8 Tests with 3 Failures and 2 Errors in 0.00s.[0m
+
 '
 ]
 
@@ -141,10 +252,10 @@ GsTestStatsTest class >> failureJson [
 { #category : 'fixtures' }
 GsTestStatsTest class >> successFixture [
 	^ '
-[1m[34m#############################################
-[1m[34m# Stdout-testReportSuccess                  #
-[1m[34m# 5 Tests with 0 Failures and 0 Errors in s #
-[1m[34m#############################################
+[1m[34m#################################################
+[1m[34m# Stdout-testReportSuccess                      #
+[1m[34m# 5 Tests with 0 Failures and 0 Errors in 0.00s #
+[1m[34m#################################################
 [0m
 (5 tests passed)
 [1m
@@ -154,7 +265,10 @@ SCIPassingTests
 [32m ✓[0m #testDeny (ms)[0m
 [32m ✓[0m #testEmpty (ms)[0m
 [32m ✓[0m #testRaise (ms)[0m
-[1m[32m  Executed 5 Tests with 0 Failures and 0 Errors in s.[0m
+
+
+[1m[32m  Executed 5 Tests with 0 Failures and 0 Errors in 0.00s.[0m
+
 '
 ]
 
@@ -325,6 +439,9 @@ GsTestStatsTest >> assert: aFixture matches: aString [
 	"Assert that all characters of aFixture are also in aString (also respect the order)."
 
 	| index |
+	aFixture = aString
+		ifTrue: [ ^ self ].
+	"attempt to isolate thelocation of the difference to make debugging easier"
 	index := 1.
 	aFixture
 		do: [ :char | 
@@ -334,38 +451,73 @@ GsTestStatsTest >> assert: aFixture matches: aString [
 			index = 0
 				ifTrue: [ 
 					TestResult failure
-						signal: 'Cannot match: "' , aFixture , '" to: "' , aString , '"' ] ]
+						signal: 'Cannot match: "' , aFixture , '" to: "' , aString , '"' ] ].
+	"hmmm, the still don't match"
+	TestResult failure
+		signal: 'Strings do not match: "' , aFixture , '" to: "' , aString , '"'
 ]
 
 { #category : 'tests' }
-GsTestStatsTest >> testDiferentSampleComparison [
-	"copy a sample and change a passing test to failing, a passing test to erroring, a failing test to passing and an erroring test to failing"
+GsTestStatsTest >> testAddedAndRemovedTestSampleComparison [
+	"Add a new test case and remove an existing test case"
 
 	| sample1 sample2 stream result sampleDict |
-	sampleDict := STON fromStream: self class successJson readStream.
+	sampleDict := STON fromStream: self class baselineTestForComparison readStream.
 	sample1 := GsTestSuiteSample fromDictionary: sampleDict.
 	sample2 := sample1 copy.
 
-	sample2 testCases detect: [ :each | each selector == #'xxx' ].
-	self halt.
+	{#'testError_2' . #'testPass_2' . #'testFail_2' } do: [:selector |
+		| testCase |
+		testCase := sample2 testCases detect: [ :each | each selector == selector ].
+		sample2 testCases remove: testCase ].
+
 	stream := WriteStream on: String new.
-	sample1 compareTo: sample2 on: stream.
+	sample2 compareTo: sample1 on: stream.
 	result := stream contents.
 
-	self assert: self class compareToErrorsAndFailureDiffs matches: result
+	self assert: self class compareJsonToAddedAndRemovedTestCases matches: result
 ]
 
 { #category : 'tests' }
-GsTestStatsTest >> testEquivalentSampleComparison [
+GsTestStatsTest >> testDiferentTestSampleComparison [
+	"copy a sample and change a passing test to failing, a passing test to erroring, a failing test to passing and an erroring test to failing"
+
+	| sample1 sample2 stream result sampleDict |
+	sampleDict := STON fromStream: self class baselineTestForComparison readStream.
+	sample1 := GsTestSuiteSample fromDictionary: sampleDict.
+	sample2 := sample1 copy.
+
+	(sample2 testCases detect: [ :each | each selector == #'testError_2' ])
+		setStatusFailed.
+	(sample2 testCases detect: [ :each | each selector == #'testError_3' ])
+		setStatusPassed.
+	(sample2 testCases detect: [ :each | each selector == #'testFail_2' ])
+		setStatusErrored.
+	(sample2 testCases detect: [ :each | each selector == #'testFail_3' ])
+		setStatusPassed.
+	(sample2 testCases detect: [ :each | each selector == #'testPass_2' ])
+		setStatusFailed.
+	(sample2 testCases detect: [ :each | each selector == #'testPass_3' ])
+		setStatusErrored.
+"ADD A NEW TESTS AND REMOVE A TEST"
+	stream := WriteStream on: String new.
+	sample2 compareTo: sample1 on: stream.
+	result := stream contents.
+
+	self assert: self class compareJsonToPassErrorAndFailureChanges matches: result
+]
+
+{ #category : 'tests' }
+GsTestStatsTest >> testEquivalentTestSampleComparison [
 	| sample1 stream result sampleDict |
-	sampleDict := STON fromStream: self class successJson readStream.
+	sampleDict := STON fromStream: self class baselineTestForComparison readStream.
 	sample1 := GsTestSuiteSample fromDictionary: sampleDict.
 
 	stream := WriteStream on: String new.
 	sample1 compareTo: sample1 on: stream.
 	result := stream contents.
 
-	self assert: self class compareToSelfSuccessJson matches: result
+	self assert: self class compareJsonToSelf matches: result
 ]
 
 { #category : 'tests' }
@@ -464,5 +616,25 @@ GsTestStatsTest >> testTestSuiteSampleTestFailure [
 	reporter testSuiteSample gsVersion: self class canonicalGemStoneVersion.
 	reporter testSuiteSample exportJsonTo: stream.
 	self assert: self class failureJson matches: stream contents ]
+		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
+]
+
+{ #category : 'tests' }
+GsTestStatsTest >> testTestSuiteSampleTestForComparison [
+	| warnings runner reporter stream |
+	warnings := GsTestStatsCI deprecationWarnings.
+	[ 
+	GsTestStatsCI deprecatedReset.
+	runner := (GsTestStatsCITestRunner
+		runClasses: {SCITestsForComparison}
+		named: 'TestSuiteSample-testForComparison')
+		failOnSCIDeprecationWarnings: true;
+		yourself.
+	reporter := GsTestStatsCITestReporterTestSuiteSample report: runner.
+	stream := WriteStream on: String new.
+	reporter testSuiteSample timeStamp: self class canonicalTimeStamp.
+	reporter testSuiteSample gsVersion: self class canonicalGemStoneVersion.
+	reporter testSuiteSample exportJsonTo: stream.
+	self assert: self class baselineTestForComparison matches: stream contents ]
 		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
 ]

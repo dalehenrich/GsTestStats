@@ -421,7 +421,7 @@ GsTestSuiteSample >> compareTo: testSuiteSample on: aWriteStream [
 	labels := {'PASSES: tests: + now passing;  ++ new passing test; - removed test [EFP is indication of previous test status]'.
 	'FAILURES: tests: + now failing;  ++ new failing test; - removed test [EFP is indication of previous test status]'.
 	'ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [EFP is indication of previous test status]'}.
-	statusArray := {#'passing'.
+	statusArray := {#'passed'.
 	#'failures'.
 	#'errors'}.
 	noDiffs := true.
@@ -612,7 +612,7 @@ GsTestSuiteSample >> properties: aDictionary [
 { #category : 'queries' }
 GsTestSuiteSample >> queryTestCases: queryString [
 	"
-		status: #passed, #failure, #error
+		status: #passed, #failures, #errors
 
 		((GsTestSuiteSample suiteSamples detect: [:each | true ]) 
 			queryTestCases: 'each.status == #passed' ) size
