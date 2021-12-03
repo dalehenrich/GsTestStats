@@ -6,15 +6,16 @@ Class {
 
 { #category : 'executing' }
 GsTestStatsCITestReporterStdout class >> report: aSCITestRunner [
-	self report: aSCITestRunner on: GsTestStatsCI stdout
+	^ self report: aSCITestRunner on: GsTestStatsCI stdout
 ]
 
 { #category : 'executing' }
 GsTestStatsCITestReporterStdout class >> report: aSCITestRunner on: aStream [
-	self new
+	^ self new
 		runner: aSCITestRunner;
 		stream: aStream;
-		report
+		report;
+		yourself
 ]
 
 { #category : 'printing' }
@@ -123,15 +124,6 @@ GsTestStatsCITestReporterStdout >> printPassingResults [
 			self printTitle: class asString.
 			passing do: [ :result | self printPass: result ] ] ]
 	] ensure: [ self printTravisFold: 'passing_tests' action: 'end' ]
-]
-
-{ #category : 'printing' }
-GsTestStatsCITestReporterStdout >> printResults [
-	(runner passingTests > 0 and: [ runner hidePassingTests not ])
-		ifTrue: [ self printPassingResults ].
-	(runner isSuccessful not and: [ runner passingTests < runner totalTests])
-		ifTrue: [ self printNotPassingResults ].
-  self printDeprecationWarnings.
 ]
 
 { #category : 'printing' }

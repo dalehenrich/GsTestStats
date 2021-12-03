@@ -10,7 +10,8 @@ Class {
 		'notes',
 		'gsVersion',
 		'branch',
-		'commitSha'
+		'commitSha',
+		'deprecationWarnings'
 	],
 	#classVars : [
 		'SuiteSamples'
@@ -303,6 +304,11 @@ GsTestSuiteSample >> _testCaseSampleMaps [
 	^ { pass . fail . error}
 ]
 
+{ #category : 'updating' }
+GsTestSuiteSample >> addTestCaseSample: aGsTestCaseSample [
+	self testCases add: aGsTestCaseSample
+]
+
 { #category : 'accessing' }
 GsTestSuiteSample >> branch [
 	^ branch
@@ -500,6 +506,48 @@ GsTestSuiteSample >> compareTo: testSuiteSample on: aWriteStream [
 ]
 
 { #category : 'accessing' }
+GsTestSuiteSample >> deprecationWarnings [
+	^ deprecationWarnings ifNil: [ deprecationWarnings := {} ]
+]
+
+{ #category : 'accessing' }
+GsTestSuiteSample >> deprecationWarnings: aCollection [
+	deprecationWarnings := aCollection asArray
+]
+
+{ #category : 'exporting' }
+GsTestSuiteSample >> exportJsonTo: aStream [
+	| jsonObject jsonTestCases |
+	jsonTestCases := {}.
+	jsonObject := GsTonelOrderedDictionary new
+		at: 'branch' put: self branch;
+		at: 'commitSha' put: self commitSha;
+		at: 'deprecationWarnings' put: self deprecationWarnings;
+		at: 'gsVersion' put: self gsVersion;
+		at: 'notes' put: self notes;
+		at: 'properties' put: self properties;
+		at: 'resultsSummary' put: self resultsSummary;
+		at: 'suiteName' put: self suiteName;
+		at: 'testCases' put: jsonTestCases;
+		at: 'timeStamp' put: self timeStamp printString;
+		yourself.
+	(self testCases
+		sort: [ :a :b | 
+			a className < b className
+				or: [ a className = b className and: [ a selector <= b selector ] ] ])
+		do: [ :testCase | 
+			jsonTestCases
+				add:
+					(GsTonelOrderedDictionary new
+						at: 'className' put: testCase className asString;
+						at: 'status' put: testCase status asString;
+						at: 'selector' put: testCase selector asString;
+						at: 'time' put: testCase time asString;
+						yourself) ].
+	STON put: jsonObject asJsonOnStreamPretty: aStream
+]
+
+{ #category : 'accessing' }
 GsTestSuiteSample >> gsVersion [
 	^ gsVersion
 ]
@@ -570,7 +618,7 @@ GsTestSuiteSample >> queryTestCases: queryString [
 
 { #category : 'accessing' }
 GsTestSuiteSample >> resultsSummary [
-	^ resultsSummary
+	^ resultsSummary ifNil: [ resultsSummary := Dictionary new ]
 ]
 
 { #category : 'accessing' }
