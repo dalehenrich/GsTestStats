@@ -96,10 +96,13 @@ GsTestStatsTest class >> canonicalTimeStamp [
 GsTestStatsTest class >> compareJsonToAddedAndRemovedTestCases [
 	^ 'Diffs for PASSES: tests: + now passing;  ++ new passing test; - removed test [EFP is indication of previous test status]
  -P	SCITestsForComparison debug: #testPass_2
+ ++	SCITestsForComparison debug: #testPass_4
 Diffs for FAILURES: tests: + now failing;  ++ new failing test; - removed test [EFP is indication of previous test status]
  -F	SCITestsForComparison debug: #testFail_2
+ ++	SCITestsForComparison debug: #testFail_4
 Diffs for ERRORS: tests: + now erroring;  ++ new erroring test; - removed test [EFP is indication of previous test status]
  -E	SCITestsForComparison debug: #testError_2
+ ++	SCITestsForComparison debug: #testError_4
 '
 ]
 
@@ -343,7 +346,7 @@ GsTestStatsTest class >> successJsonWithBranch [
 		"tests" : 5,
 		"time" : 0.0
 	},
-	"suiteName" : "TestSuiteSample-testReportSuccess",
+	"suiteName" : "TestSuiteSample-testReportSuccessWithBranch",
 	"testCases" : [
 		{
 			"className" : "SCIPassingTests",
@@ -397,7 +400,7 @@ GsTestStatsTest class >> successJsonWithBranchAndCommitSha [
 		"tests" : 5,
 		"time" : 0.0
 	},
-	"suiteName" : "TestSuiteSample-testReportSuccess",
+	"suiteName" : "TestSuiteSample-testReportSuccessWithBranchAndCommitSha",
 	"testCases" : [
 		{
 			"className" : "SCIPassingTests",
@@ -466,10 +469,40 @@ GsTestStatsTest >> testAddedAndRemovedTestSampleComparison [
 	sample1 := GsTestSuiteSample fromDictionary: sampleDict.
 	sample2 := sample1 copy.
 
-	{#'testError_2' . #'testPass_2' . #'testFail_2' } do: [:selector |
-		| testCase |
-		testCase := sample2 testCases detect: [ :each | each selector == selector ].
-		sample2 testCases remove: testCase ].
+	{#'testError_2'.
+	#'testPass_2'.
+	#'testFail_2'}
+		do: [ :selector | 
+			| testCase |
+			testCase := sample2 testCases detect: [ :each | each selector == selector ].
+			sample2 testCases remove: testCase ].
+
+	sample2
+		addTestCaseSample:
+				(GsTestCaseSample new
+						className: 'SCITestsForComparison';
+						status: GsTestCaseSample passedStatus;
+						selector: 'testPass_4';
+						suite: sample2;
+						time: 0;
+						yourself);
+		addTestCaseSample:
+				(GsTestCaseSample new
+						className: 'SCITestsForComparison';
+						status: GsTestCaseSample failedStatus;
+						selector: 'testFail_4';
+						suite: sample2;
+						time: 0;
+						yourself);
+		addTestCaseSample:
+				(GsTestCaseSample new
+						className: 'SCITestsForComparison';
+						status: GsTestCaseSample erroredStatus;
+						selector: 'testError_4';
+						suite: sample2;
+						time: 0;
+						yourself);
+		yourself.
 
 	stream := WriteStream on: String new.
 	sample2 compareTo: sample1 on: stream.
