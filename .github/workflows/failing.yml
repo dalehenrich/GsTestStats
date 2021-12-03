@@ -34,8 +34,10 @@ jobs:
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
+          set +e
           ./bin/GsTestStatsCI.solo --fail
           exitCode=$?
+          set -e
           if [ "$exitCode" = "0" ] ; then
             echo "Unexpected success"
             exit 1
