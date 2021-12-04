@@ -26,7 +26,7 @@ EXAMPLES
   $basename -D --fail              # run tests that pass and fail
   $basename -D --pass              # run tests that pass
   $basename -D --pass --notPassing # run tests that pass, report detail on only failing tests
-  $basename -D --notPassing        # run tests that pass and fail, report detail on only failing tests
+  $basename -D --fail --notPassing # run tests that pass and fail, report detail on only failing tests
 -----
 %
 specUrls
