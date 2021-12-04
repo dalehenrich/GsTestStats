@@ -34,7 +34,7 @@ jobs:
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
           set +e
-          ./bin/GsTestStatsCI.solo --notPassing
+          ./bin/GsTestStatsCI.solo --fail --notPassing
           exitCode=$?
           set -e
           if [ "$exitCode" = "0" ] ; then
