@@ -3,6 +3,7 @@ options
 {
 	SuperDoitOptionalOptionWithNoArg long: 'fail'.
 	SuperDoitOptionalOptionWithNoArg long: 'pass'.
+	SuperDoitOptionalOptionWithNoArg long: 'notPassing'.
 }
 %
 usage
@@ -23,6 +24,7 @@ EXAMPLES
   $basename -D                  # run tests for default class list (GsTestStatsTest)
   $basename -D SCIExcludedTests # run tests for classes listed on command line
   $basename -D --fail           # run tests that pass and fail
+  $basename -D --notPassing     # run tests that pass and fail, report detail on only failing tests
   $basename -D --pass           # run tests that pass
 -----
 %
@@ -57,7 +59,9 @@ doit
 			runnerClass 
 				runClasses: classes
 				named: 'Stdout-testReportSuccess' ].
-	reporter := (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner.
+	reporter := self notPassing
+		ifTrue: [  (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') reportNotPassing: runner ]
+		ifFalse: [ (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner ].
 	runner isSuccessful
 		ifFalse: [ self exitWithStatus: 1 ].
 	^ self noResult

@@ -19,6 +19,13 @@ GsTestStatsCITestReporterStdout class >> report: aSCITestRunner on: aStream [
 ]
 
 { #category : 'executing' }
+GsTestStatsCITestReporterStdout class >> reportNotPassing: aSCITestRunner [
+	"do not print the details for passing tests"
+
+	^ self reportNotPassing: aSCITestRunner on: GsTestStatsCI stdout
+]
+
+{ #category : 'executing' }
 GsTestStatsCITestReporterStdout class >> reportNotPassing: aSCITestRunner on: aStream [
 	"do not print the details for passing tests"
 

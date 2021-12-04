@@ -30,7 +30,6 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: test
         run: |
-          set -x
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
