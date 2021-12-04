@@ -17,7 +17,7 @@ GsTestStatsTest class >> baselineTestForComparison [
 		"errors" : 3,
 		"failures" : 3,
 		"passed" : 3,
-		"summary" : "9 Tests with 3 Failures and 3 Errors in 0.00s",
+		"summary" : "9 Tests with 3 Failures, 3 Errors and 0 DeprecationWarnings in 0.00s",
 		"tests" : 9,
 		"time" : 0.0
 	},
@@ -193,7 +193,7 @@ GsTestStatsTest class >> failureJson [
 		"errors" : 2,
 		"failures" : 3,
 		"passed" : 3,
-		"summary" : "8 Tests with 3 Failures and 2 Errors in 0.00s",
+		"summary" : "8 Tests with 3 Failures, 2 Errors and 1 DeprecationWarnings in 0.00s",
 		"tests" : 8,
 		"time" : 0.0
 	},
@@ -253,6 +253,53 @@ GsTestStatsTest class >> failureJson [
 ]
 
 { #category : 'fixtures' }
+GsTestStatsTest class >> notPassingFixture [
+	"
+		'/home/dhenrich/rogue/_homes/rogue/_home/shared/repos/GsTestStats/ex.txt' 
+			asFileReference writeStreamDo: [:strm | strm nextPutAll: self ]
+	"
+	^ '
+[1m[34m#################################################
+[1m[34m# Stdout-testReportNotPassing                      #
+[1m[34m# 8 Tests with 3 Failures and 2 Errors in 0.00s #
+[1m[34m#################################################
+[0m[1m
+[1m[31m##################
+[1m[31m# 3 tests passed #
+[1m[31m##################
+[0m[1m
+[1m[31m#########################
+[1m[31m# 5 tests did not pass: #
+[1m[31m#########################
+[0m[1m
+SCIExcludedTests
+[0m[1m[33m ✗ #testAssertError (ms)[0m
+[1m[0m[1m[31m ✗ #testError (ms)[0m
+[1m[0m[1m[33m ✗ #testFailure (ms)[0m
+[1m[0m[1m[31m ✗ #testShouldFail (ms)[0m
+[1m[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThat...splayedCorrectlyInATravisLog (ms)[0m
+[1m[0m
+
+[1m[31m###########
+[1m[31m# Summary #
+[1m[31m###########
+[0m[1m
+SCIExcludedTests
+[0m[33m ✗ #testAssertError (ms)[0m
+[31m ✗ #testError (ms)[0m
+[33m ✗ #testFailure (ms)[0m
+[31m ✗ #testShouldFail (ms)[0m
+[33m ✗ #testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog (ms)[0m
+[1m[31msmalltalkCI Deprecation Warnings[0m
+ - SCIExcludedTests>>testDeprecation (This is just a test)
+
+
+[1m[31m  Executed 8 Tests with 3 Failures and 2 Errors in 0.00s.[0m
+
+'
+]
+
+{ #category : 'fixtures' }
 GsTestStatsTest class >> successFixture [
 	^ '
 [1m[34m#################################################
@@ -288,7 +335,7 @@ GsTestStatsTest class >> successJson [
 		"errors" : 0,
 		"failures" : 0,
 		"passed" : 5,
-		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
+		"summary" : "5 Tests with 0 Failures, 0 Errors and 0 DeprecationWarnings in 0.00s",
 		"tests" : 5,
 		"time" : 0.0
 	},
@@ -342,7 +389,7 @@ GsTestStatsTest class >> successJsonWithBranch [
 		"errors" : 0,
 		"failures" : 0,
 		"passed" : 5,
-		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
+		"summary" : "5 Tests with 0 Failures, 0 Errors and 0 DeprecationWarnings in 0.00s",
 		"tests" : 5,
 		"time" : 0.0
 	},
@@ -396,7 +443,7 @@ GsTestStatsTest class >> successJsonWithBranchAndCommitSha [
 		"errors" : 0,
 		"failures" : 0,
 		"passed" : 5,
-		"summary" : "5 Tests with 0 Failures and 0 Errors in 0.00s",
+		"summary" : "5 Tests with 0 Failures, 0 Errors and 0 DeprecationWarnings in 0.00s",
 		"tests" : 5,
 		"time" : 0.0
 	},
@@ -551,6 +598,22 @@ GsTestStatsTest >> testEquivalentTestSampleComparison [
 	result := stream contents.
 
 	self assert: self class compareJsonToSelf matches: result
+]
+
+{ #category : 'tests' }
+GsTestStatsTest >> testStdoutReportNotPassing [
+	| warnings runner reporter stream result |
+	warnings := GsTestStatsCI deprecationWarnings.
+	[ 
+	GsTestStatsCI deprecatedReset.
+	runner := GsTestStatsCITestRunner
+		runClasses: {SCIExcludedTests}
+		named: 'Stdout-testReportNotPassing'.
+	stream := WriteStream on: String new.
+	reporter := GsTestStatsCITestReporterStdout reportNotPassing: runner on: stream.
+	result := stream contents.
+	self assert: self class notPassingFixture matches: result ]
+		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
 ]
 
 { #category : 'tests' }
