@@ -6,15 +6,34 @@ Class {
 
 { #category : 'executing' }
 GsTestStatsCITestReporterStdout class >> report: aSCITestRunner [
-	self report: aSCITestRunner on: GsTestStatsCI stdout
+	^ self report: aSCITestRunner on: GsTestStatsCI stdout
 ]
 
 { #category : 'executing' }
 GsTestStatsCITestReporterStdout class >> report: aSCITestRunner on: aStream [
-	self new
+	^ self new
 		runner: aSCITestRunner;
 		stream: aStream;
-		report
+		report;
+		yourself
+]
+
+{ #category : 'executing' }
+GsTestStatsCITestReporterStdout class >> reportNotPassing: aSCITestRunner [
+	"do not print the details for passing tests"
+
+	^ self reportNotPassing: aSCITestRunner on: GsTestStatsCI stdout
+]
+
+{ #category : 'executing' }
+GsTestStatsCITestReporterStdout class >> reportNotPassing: aSCITestRunner on: aStream [
+	"do not print the details for passing tests"
+
+	^ self new
+		runner: aSCITestRunner;
+		stream: aStream;
+		reportNotPassing;
+		yourself
 ]
 
 { #category : 'printing' }
@@ -39,15 +58,18 @@ GsTestStatsCITestReporterStdout >> printBanner: aTitle subtitle: aSubtitle color
 
 { #category : 'printing' }
 GsTestStatsCITestReporterStdout >> printDeprecationWarnings [
-	GsTestStatsCI deprecationWarnings ifNotEmpty: [
-    self
-      printTravisFold: 'deprecation_warnings' action: 'start';
-      setModeBoldRed;
-      print: 'smalltalkCI Deprecation Warnings';
-      resetMode;
-      newLine.
-    GsTestStatsCI deprecationWarnings do: [ :each | self print: ' - ', each; newLine ].
-    self printTravisFold: 'deprecation_warnings' action: 'end' ].
+	| warnings |
+	warnings := GsTestStatsCI deprecationWarnings.
+	warnings
+		ifNotEmpty: [ 
+			self
+				printBanner: warnings size asString , ' smalltalkCI Deprecation Warnings'
+				color: GsTestStatsCI ansiRed.
+			warnings
+				do: [ :each | 
+					self
+						print: ' - ' , each;
+						newLine ] ]
 ]
 
 { #category : 'printing' }
@@ -68,41 +90,33 @@ GsTestStatsCITestReporterStdout >> printEnd [
 { #category : 'printing' }
 GsTestStatsCITestReporterStdout >> printException: aResult [
 	self
-		printTravisFold: aResult foldName action: 'start';
 		setModeBold;
 		print: (aResult ansiTitleContractedTo: 70);
 		newLine;
 		setModeBold;
 		resetMode.
-	aResult stack ifNotNil: [
-		self newLine;
-			print: aResult stack;
-			resetMode ].
-	self printTravisFold: aResult foldName action: 'end'
+	aResult stack
+		ifNotNil: [ 
+			self
+				newLine;
+				print: aResult stack;
+				resetMode ]
 ]
 
 { #category : 'printing' }
 GsTestStatsCITestReporterStdout >> printNotPassingResults [
 	| title |
-	title := (runner erroredTests + runner failedTests) asString, ' tests did not pass:'.
+	title := (runner erroredTests + runner failedTests) asString
+		, ' tests did not pass:'.
 	self printBanner: title color: GsTestStatsCI ansiRed.
-	runner results keysAndValuesDo: [ :class :results | | notPassing |
-		notPassing := results select: [ :result | result passed not ].
-		notPassing ifNotEmpty: [
-			self printTitle: class asString.
-			notPassing do: [ :result | self printException: result ] ] ].
-	GsTestStatsCI isTravisBuild
-		ifFalse: [ self printNotPassingSummary ]
-]
-
-{ #category : 'printing' }
-GsTestStatsCITestReporterStdout >> printNotPassingSummary [
-	self newLine; printBanner: 'Summary' color: GsTestStatsCI ansiRed.
-	runner results keysAndValuesDo: [ :class :results | | notPassing |
-		notPassing := results select: [ :result | result passed not ].
-		notPassing ifNotEmpty: [
-			self printTitle: class asString.
-			notPassing do: [ :result | self print: result ansiTitle; newLine ] ] ]
+	runner results
+		keysAndValuesDo: [ :class :results | 
+			| notPassing |
+			notPassing := results select: [ :result | result passed not ].
+			notPassing
+				ifNotEmpty: [ 
+					self printTitle: class asString.
+					notPassing do: [ :result | self printException: result ] ] ].
 ]
 
 { #category : 'printing' }
@@ -113,25 +127,19 @@ GsTestStatsCITestReporterStdout >> printPass: aResult [
 { #category : 'printing' }
 GsTestStatsCITestReporterStdout >> printPassingResults [
 	| title |
-	self newLine; printTravisFold: 'passing_tests' action: 'start'.
-	title := '(', runner passingTests asString, ' tests passed)'.
-	self print: title; newLine.
-	
-	[ runner results keysAndValuesDo: [ :class :results | | passing |
-		passing := results select: [ :result | result passed ].
-		passing ifNotEmpty: [
-			self printTitle: class asString.
-			passing do: [ :result | self printPass: result ] ] ]
-	] ensure: [ self printTravisFold: 'passing_tests' action: 'end' ]
-]
+	title := '(' , runner passingTests asString , ' tests passed)'.
+	self
+		print: title;
+		newLine.
 
-{ #category : 'printing' }
-GsTestStatsCITestReporterStdout >> printResults [
-	(runner passingTests > 0 and: [ runner hidePassingTests not ])
-		ifTrue: [ self printPassingResults ].
-	(runner isSuccessful not and: [ runner passingTests < runner totalTests])
-		ifTrue: [ self printNotPassingResults ].
-  self printDeprecationWarnings.
+	runner results
+		keysAndValuesDo: [ :class :results | 
+			| passing |
+			passing := results select: [ :result | result passed ].
+			passing
+				ifNotEmpty: [ 
+					self printTitle: class asString.
+					passing do: [ :result | self printPass: result ] ] ]
 ]
 
 { #category : 'printing' }
@@ -148,9 +156,19 @@ GsTestStatsCITestReporterStdout >> printTitle: aTitle [
 ]
 
 { #category : 'printing' }
-GsTestStatsCITestReporterStdout >> printTravisFold: foldName action: action [
-	GsTestStatsCI isTravisBuild ifFalse: [ ^ self ].
-	self print: (GsTestStatsCI travisFold: foldName action: action)
+GsTestStatsCITestReporterStdout >> reportNotPassing [
+	"do not print the details for passing tests"
+
+	| color |
+	self printStart.
+	color := runner passingTests > 0
+		ifTrue: [ GsTestStatsCI ansiGreen ]
+		ifFalse: [ GsTestStatsCI ansiRed ].
+	self printBanner: runner passingTests asString , ' tests passed' color: color.
+	(runner isSuccessful not and: [ runner passingTests < runner totalTests ])
+		ifTrue: [ self printNotPassingResults ].
+	self printDeprecationWarnings.
+	self printEnd
 ]
 
 { #category : 'ansi' }

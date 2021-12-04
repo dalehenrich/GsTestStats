@@ -3,8 +3,7 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'runner',
-		'stream',
-		'testSuiteSample'
+		'stream'
 	],
 	#category : 'GsTestStats-TestSupport'
 }
@@ -27,60 +26,48 @@ GsTestStatsTestReporter >> print: aString [
 ]
 
 { #category : 'printing' }
+GsTestStatsTestReporter >> printDeprecationWarnings [
+	self subclassResponsibility: #'printDeprecationWarnings'
+]
+
+{ #category : 'printing' }
 GsTestStatsTestReporter >> printEnd [
 ]
 
 { #category : 'printing' }
 GsTestStatsTestReporter >> printException: aResult [
-	self shouldNotImplement: #'printException:'
+	self subclassResponsibility: #'printException:'
 ]
 
 { #category : 'printing' }
-GsTestStatsTestReporter >> printResult: aResult [
-	| testCase status |
-	status := aResult passed
-		ifTrue: [ 'passed' ]
-		ifFalse: [ 
-			aResult errored
-				ifTrue: [ 'errors' ]
-				ifFalse: [ 'failures' ] ].
-	testCase := GsTestCaseSample new
-		className: aResult testCase class name asString;
-		selector: aResult testCase selector;
-		status: status;
-		suite: self testSuiteSample;
-		time: aResult time;	"milliseconds"
-		yourself.
-	self testSuiteSample testCases add: testCase
+GsTestStatsTestReporter >> printNotPassingResults [
+	self subclassResponsibility: #'printNotPassingResults'
+]
+
+{ #category : 'printing' }
+GsTestStatsTestReporter >> printPassingResults [
+	self subclassResponsibility: #'printPassingResults'
+]
+
+{ #category : 'printing' }
+GsTestStatsTestReporter >> printResults [
+	(runner passingTests > 0 and: [ runner hidePassingTests not ])
+		ifTrue: [ self printPassingResults ].
+	(runner isSuccessful not and: [ runner passingTests < runner totalTests])
+		ifTrue: [ self printNotPassingResults ].
+  self printDeprecationWarnings.
 ]
 
 { #category : 'printing' }
 GsTestStatsTestReporter >> printStart [
-	self testSuiteSample
-		suiteName: runner suiteName;
-		timeStamp: DateAndTime now printString;
-		properties: Dictionary new;
-		notes: '';
-		gsVersion: (System gemVersionAt: #'gsVersion');
-		testCases: {};
-		resultsSummary:
-				(Dictionary new
-						at: #'summary' put: runner summary;
-						at: #'tests' put: runner totalTests;
-						at: #'failures' put: runner failedTests;
-						at: #'errors' put: runner erroredTests;
-						at: #'passed' put: runner passingTests;
-						at: #'time' put: runner suiteTime / 1000.0;
-						yourself);
-		yourself
+	self subclassResponsibility: #'printStart'
 ]
 
 { #category : 'printing' }
 GsTestStatsTestReporter >> report [
 	self printStart.
 	self printResults.
-	self printEnd.
-	^ self testSuiteSample
+	self printEnd
 ]
 
 { #category : 'accessing' }
@@ -110,9 +97,4 @@ GsTestStatsTestReporter >> stream: anObject [
 { #category : 'helpers' }
 GsTestStatsTestReporter >> tab [
 	stream nextPut: Character tab
-]
-
-{ #category : 'accessing' }
-GsTestStatsTestReporter >> testSuiteSample [
-	^testSuiteSample ifNil: [testSuiteSample := GsTestSuiteSample new]
 ]

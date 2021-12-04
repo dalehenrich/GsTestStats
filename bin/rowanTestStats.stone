@@ -170,26 +170,7 @@ _doXXX
 %
 method
 _exportSample: sample to: aStream
-	| jsonObject testCases |
-	testCases := Array new.
-	jsonObject := Dictionary new
-		at: 'branch' put: sample branch;
-		at: 'commitSha' put: sample commitSha;
-		at: 'gsVersion' put: sample gsVersion;
-		at: 'notes' put: sample notes;
-		at: 'properties' put: sample properties;
-		at: 'resultsSummary' put: sample resultsSummary;
-		at: 'suiteName' put: sample suiteName;
-		at: 'testCases' put: testCases;
-		at: 'timeStamp' put: sample timeStamp printString;
-		yourself.
-	sample testCases do: [:testCase |
-		testCases add: (Dictionary new
-			at: 'selector' put: testCase selector asString;
-			at: 'className' put: testCase className asString;
-			at: 'status' put: testCase status asString;
-			yourself) ].
-	STON put: jsonObject asJsonOnStreamPretty: aStream.
+	sample exportJsonTo: aStream.
 %
 method
 _queryAbsoluteLatestSample

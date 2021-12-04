@@ -120,11 +120,6 @@ GsTestStatsCI class >> isDebug [
 	^ (self getEnv: 'SCIII_DEBUG') = 'true'
 ]
 
-{ #category : 'printing' }
-GsTestStatsCI class >> isTravisBuild [
-	^ false
-]
-
 { #category : 'helpers' }
 GsTestStatsCI class >> printDebug: aString [
 	GsTestStatsCI isDebug

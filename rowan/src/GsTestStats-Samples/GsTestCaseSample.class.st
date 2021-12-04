@@ -11,6 +11,16 @@ Class {
 	#category : 'GsTestStats-Samples'
 }
 
+{ #category : 'accessing' }
+GsTestCaseSample class >> erroredStatus [
+	^ #'errors'
+]
+
+{ #category : 'accessing' }
+GsTestCaseSample class >> failedStatus [
+	^ #'failures'
+]
+
 { #category : 'instance creation' }
 GsTestCaseSample class >> fromDictionary: sampleDict [
 	| newTestCaseSample |
@@ -24,6 +34,11 @@ GsTestCaseSample class >> fromDictionary: sampleDict [
 GsTestCaseSample class >> new [
 
 	^ self basicNew initialize
+]
+
+{ #category : 'accessing' }
+GsTestCaseSample class >> passedStatus [
+	^ #'passed'
 ]
 
 { #category : 'accessing' }
@@ -63,6 +78,21 @@ GsTestCaseSample >> selector [
 { #category : 'accessing' }
 GsTestCaseSample >> selector: aString [
 	selector := aString asSymbol
+]
+
+{ #category : 'initialization' }
+GsTestCaseSample >> setStatusErrored [
+	self status: self class erroredStatus
+]
+
+{ #category : 'initialization' }
+GsTestCaseSample >> setStatusFailed [
+	self status: self class failedStatus
+]
+
+{ #category : 'initialization' }
+GsTestCaseSample >> setStatusPassed [
+	self status: self class passedStatus
 ]
 
 { #category : 'accessing' }
@@ -120,7 +150,7 @@ GsTestCaseSample >> testSummaryOn: strm [
 
 { #category : 'accessing' }
 GsTestCaseSample >> time [
-	^time
+	^ time ifNil: [ time := 0 ]
 ]
 
 { #category : 'accessing' }

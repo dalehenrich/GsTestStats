@@ -22,18 +22,13 @@ TestCase >> debug: aResult [
 ]
 
 { #category : '*gsteststats-kernel-extensions' }
-TestCase >> expectedFailures [
-	^ Array new
-]
-
-{ #category : '*gsteststats-kernel-extensions' }
 TestCase >> fail: aDescriptionString [
 	^ self assert: false description: aDescriptionString
 ]
 
 { #category : '*gsteststats-kernel-extensions' }
 TestCase >> shouldPass [
-	"Unless the selector is in the list we get from #expectedFailures, we expect it to pass"
+	"expected failures not supported at the moment, so all tests should pass"
 
-	^ (self expectedFailures includes: testSelector) not
+	^ true
 ]

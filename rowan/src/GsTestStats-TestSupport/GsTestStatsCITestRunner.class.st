@@ -304,7 +304,10 @@ GsTestStatsCITestRunner >> suiteTimeString [
 
 { #category : 'accessing' }
 GsTestStatsCITestRunner >> summary [
-	^ self totalTests asString, ' Tests with ', self failedTests asString, ' Failures and ', self erroredTests asString, ' Errors in ', self suiteTimeString
+	^ self totalTests asString , ' Tests with ' , self failedTests asString
+		, ' Failures, ' , self erroredTests asString , ' Errors and '
+		, GsTestStatsCI deprecationWarnings size asString , ' DeprecationWarnings in '
+		, self suiteTimeString
 ]
 
 { #category : 'running' }
