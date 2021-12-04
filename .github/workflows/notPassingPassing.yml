@@ -1,5 +1,5 @@
 # test .solo, .stone and .topaz scripts
-name: NotPassing
+name: NotPassingPassing
 
 on: 
   push:
@@ -33,14 +33,7 @@ jobs:
           ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
           echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
           export PATH=$SUPERDOIT_ROOT/bin:$PATH
-          set +e
           ./bin/GsTestStatsCI.solo --pass --notPassing
-          exitCode=$?
-          set -e
-          if [ "$exitCode" = "0" ] ; then
-            echo "Unexpected success... ./bin/GsTestStatsCI.solo should exit with non-zero exit code"
-            exit 1
-          fi
         env:
           SUPERDOIT_ROOT: ${{ steps.setup-superDoit.outputs.superDoit-root }}
           GEMSTONE: ${{ steps.setup-superDoit.outputs.gemstone-product-path }}
