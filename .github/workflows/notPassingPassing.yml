@@ -1,0 +1,60 @@
+# test .solo, .stone and .topaz scripts
+name: NotPassing
+
+on: 
+  push:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        # os: [ ubuntu-18.04, macos-10.15 ]
+        # gsvers: [ 3.6.1 ]
+        os: [ ubuntu-18.04 ]
+        gsvers: [ 3.6.1 ]
+    runs-on: ${{ matrix.os }}
+    env:
+      GS_VERS: ${{ matrix.gsvers }}
+      PLATFORM: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: setup-superDoit
+        uses: dalehenrich/setup-superDoit@v2.0
+        with:
+          gemstone-version: ${{ matrix.gsvers }}
+          superDoit-branch: 'v2.0'
+      - uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: test
+        run: |
+          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+          echo SUPERDOIT_ROOT=$SUPERDOIT_ROOT
+          export PATH=$SUPERDOIT_ROOT/bin:$PATH
+          set +e
+          ./bin/GsTestStatsCI.solo --pass --notPassing
+          exitCode=$?
+          set -e
+          if [ "$exitCode" = "0" ] ; then
+            echo "Unexpected success... ./bin/GsTestStatsCI.solo should exit with non-zero exit code"
+            exit 1
+          fi
+        env:
+          SUPERDOIT_ROOT: ${{ steps.setup-superDoit.outputs.superDoit-root }}
+          GEMSTONE: ${{ steps.setup-superDoit.outputs.gemstone-product-path }}
+          TOPAZINI_PATH: ${{steps.setup-superDoit.outputs.topazini-path}}
+#  slack-workflow-status:
+#    if: always()
+#    name: Post Workflow Status To Slack
+#    needs:
+#      - build
+#    runs-on: ubuntu-18.04
+#    steps:
+#       - name: Slack Workflow Notification
+#         uses: Gamesight/slack-workflow-status@master
+#         with:
+#          repo_token: ${{secrets.GITHUB_TOKEN}}
+#          slack_webhook_url: ${{secrets.SLACK_DALEHENRICH}}
+#          name: 'action run' 

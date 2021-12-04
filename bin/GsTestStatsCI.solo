@@ -21,11 +21,12 @@ EXAMPLES
   $basename --help
   $basename -h
   $basename --debug
-  $basename -D                  # run tests for default class list (GsTestStatsTest)
-  $basename -D SCIExcludedTests # run tests for classes listed on command line
-  $basename -D --fail           # run tests that pass and fail
-  $basename -D --notPassing     # run tests that pass and fail, report detail on only failing tests
-  $basename -D --pass           # run tests that pass
+  $basename -D                     # run tests for default class list (GsTestStatsTest)
+  $basename -D SCIExcludedTests    # run tests for classes listed on command line
+  $basename -D --fail              # run tests that pass and fail
+  $basename -D --pass              # run tests that pass
+  $basename -D --pass --notPassing # run tests that pass, report detail on only failing tests
+  $basename -D --notPassing        # run tests that pass and fail, report detail on only failing tests
 -----
 %
 specUrls
