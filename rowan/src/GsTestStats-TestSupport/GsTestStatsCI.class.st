@@ -94,7 +94,9 @@ GsTestStatsCI class >> deprecationWarnings: aCollection [
 
 { #category : 'ansi' }
 GsTestStatsCI class >> escape [
-	^ Character escape asString
+	^ self isColorful
+		ifTrue: [ Character escape asString ]
+		ifFalse: [ '' ]
 ]
 
 { #category : 'compatibility' }
