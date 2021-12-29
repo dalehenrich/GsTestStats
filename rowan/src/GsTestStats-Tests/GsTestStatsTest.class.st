@@ -582,9 +582,11 @@ GsTestStatsTest >> testEquivalentTestSampleComparison [
 
 { #category : 'tests' }
 GsTestStatsTest >> testStdoutReportNotPassing [
-	| warnings runner reporter stream result |
+	| warnings isColorful runner reporter stream result |
 	warnings := GsTestStatsCI deprecationWarnings.
+	isColorful := GsTestStatsCI isColorful.
 	[ 
+	GsTestStatsCI isColorful: true.	"force isColorful to true"
 	GsTestStatsCI deprecatedReset.
 	runner := GsTestStatsCITestRunner
 		runClasses: {SCIExcludedTests}
@@ -593,26 +595,34 @@ GsTestStatsTest >> testStdoutReportNotPassing [
 	reporter := GsTestStatsCITestReporterStdout reportNotPassing: runner on: stream.
 	result := stream contents.
 	self assert: self class notPassingFixture matches: result ]
-		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
+		ensure: [ 
+			GsTestStatsCI deprecationWarnings: warnings.
+			GsTestStatsCI isColorful: isColorful ]
 ]
 
 { #category : 'tests' }
 GsTestStatsTest >> testStdoutReportSuccess [
-	| runner reporter stream result |
+	| isColorful runner reporter stream result |
+	isColorful := GsTestStatsCI isColorful.
+	[ 
+	GsTestStatsCI isColorful: true.	"force isColorful to true"
 	runner := GsTestStatsCITestRunner
 		runClasses: {SCIPassingTests}
 		named: 'Stdout-testReportSuccess'.
 	stream := WriteStream on: (String new: 1000).
 	reporter := GsTestStatsCITestReporterStdout report: runner on: stream.
 	result := stream contents.
-	self assert: self class successFixture matches: result
+	self assert: self class successFixture matches: result ]
+		ensure: [ GsTestStatsCI isColorful: isColorful ]
 ]
 
 { #category : 'tests' }
 GsTestStatsTest >> testStdoutTestFailure [
-	| warnings runner reporter stream result |
+	| isColorful warnings runner reporter stream result |
+	isColorful := GsTestStatsCI isColorful.
 	warnings := GsTestStatsCI deprecationWarnings.
 	[ 
+	GsTestStatsCI isColorful: true.	"force isColorful to true"
 	GsTestStatsCI deprecatedReset.
 	runner := (GsTestStatsCITestRunner
 		runClasses: {SCIExcludedTests}
@@ -623,7 +633,9 @@ GsTestStatsTest >> testStdoutTestFailure [
 	reporter := GsTestStatsCITestReporterStdout report: runner on: stream.
 	result := stream contents.
 	self assert: self class failureFixture matches: result ]
-		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
+		ensure: [ 
+			GsTestStatsCI deprecationWarnings: warnings.
+			GsTestStatsCI isColorful: isColorful ]
 ]
 
 { #category : 'tests' }

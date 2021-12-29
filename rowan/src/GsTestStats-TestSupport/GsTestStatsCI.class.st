@@ -8,6 +8,11 @@ Class {
 	#category : 'GsTestStats-TestSupport'
 }
 
+{ #category : 'helpers' }
+GsTestStatsCI class >> _tempsIsColorfulKey [
+	^ #'GsTestStatsCI_IsColorful'
+]
+
 { #category : 'ansi' }
 GsTestStatsCI class >> ansiBlue [
 	^ self isColorful
@@ -111,16 +116,25 @@ GsTestStatsCI class >> hash: aString maxLength: aLength [
 
 { #category : 'helpers' }
 GsTestStatsCI class >> isColorful [
-	"IsColorful := nil"
-
-	^ IsColorful ifNil: [ IsColorful := GsFile stdout isTerminal ]
+	| tmps tmpsKey |
+	tmpsKey := self _tempsIsColorfulKey.
+	tmps := SessionTemps current.
+	(tmps at: tmpsKey otherwise: nil)
+		ifNil: [ 
+			| isColorful |
+			[ 
+			| stdout |
+			stdout := GsFile stdout.
+			isColorful := stdout isTerminal ]
+				on: Error
+				do: [ :ignored | false ].
+			^ tmps at: tmpsKey put: isColorful ]
+		ifNotNil: [ :isColorful | ^ isColorful ]
 ]
 
 { #category : 'helpers' }
 GsTestStatsCI class >> isColorful: aBool [
-	"IsColorful := nil"
-
-	IsColorful := aBool
+	SessionTemps current at: self _tempsIsColorfulKey put: aBool
 ]
 
 { #category : 'helpers' }
