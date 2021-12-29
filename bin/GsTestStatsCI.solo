@@ -39,6 +39,7 @@ doit
 			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
 			projectsHome: '$GITHUB_WORKSPACE/..'.
 		].
+	GsTestStatsCI isColorful: true. "force isColorful"
 	classes := self fail
 		ifTrue: [ { Rowan globalNamed: 'SCIExcludedTests'. Rowan globalNamed: 'SCIPassingTests' } ]
 		ifFalse: [ 
