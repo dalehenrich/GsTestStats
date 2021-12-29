@@ -13,12 +13,16 @@ Class {
 
 { #category : 'strings' }
 GsTestStatsCITestRunnerResult class >> ballot [
-	^ (Character codePoint: 10007) asString
+	^ GsTestStatsCI isColorful
+		ifTrue: [ (Character codePoint: 10007) asString ]
+		ifFalse: [ '' ]
 ]
 
 { #category : 'strings' }
 GsTestStatsCITestRunnerResult class >> checkMark [
-	^ (Character codePoint: 10003) asString
+	^ GsTestStatsCI isColorful
+		ifTrue: [ (Character codePoint: 10003) asString ]
+		ifFalse: [ '' ]
 ]
 
 { #category : 'accessing' }
