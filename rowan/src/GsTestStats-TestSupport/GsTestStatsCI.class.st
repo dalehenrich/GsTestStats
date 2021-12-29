@@ -113,8 +113,7 @@ GsTestStatsCI class >> hash: aString maxLength: aLength [
 GsTestStatsCI class >> isColorful [
 	"IsColorful := nil"
 
-	^ IsColorful
-		ifNil: [ IsColorful := ((self getEnv: 'SCIII_COLORFUL') ifNil: [ 'true' ]) = 'true' ]
+	^ IsColorful ifNil: [ IsColorful := GsFile stdout isTerminal ]
 ]
 
 { #category : 'helpers' }
