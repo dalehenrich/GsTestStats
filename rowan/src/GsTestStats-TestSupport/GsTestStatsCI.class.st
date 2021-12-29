@@ -116,6 +116,13 @@ GsTestStatsCI class >> isColorful [
 ]
 
 { #category : 'helpers' }
+GsTestStatsCI class >> isColorful: aBool [
+	"IsColorful := nil"
+
+	IsColorful := aBool
+]
+
+{ #category : 'helpers' }
 GsTestStatsCI class >> isDebug [
 	^ (self getEnv: 'SCIII_DEBUG') = 'true'
 ]
