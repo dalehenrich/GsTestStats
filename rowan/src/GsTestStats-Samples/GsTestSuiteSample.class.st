@@ -312,9 +312,9 @@ GsTestSuiteSample >> _testCasesMap [
 		do: [ :testCaseSample | 
 			| selectorMap |
 			selectorMap := classMap
-				at: testCaseSample className
+				at: testCaseSample className asString
 				ifAbsentPut: [ Dictionary new ].
-			selectorMap at: testCaseSample selector put: testCaseSample ].
+			selectorMap at: testCaseSample selector asString put: testCaseSample ].
 	^ classMap
 ]
 
