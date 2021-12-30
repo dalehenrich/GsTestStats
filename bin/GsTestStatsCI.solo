@@ -39,19 +39,19 @@ doit
 			customConditionalAttributes: (loadSpec customConditionalAttributes, #('tests'));
 			projectsHome: '$GITHUB_WORKSPACE/..'.
 		].
-	GsTestStatsCI isColorful: true. "force isColorful"
+	(self globalNamed: 'GsTestStatsCI') isColorful: true. "force isColorful"
 	classes := self fail
-		ifTrue: [ { Rowan globalNamed: 'SCIExcludedTests'. Rowan globalNamed: 'SCIPassingTests' } ]
+		ifTrue: [ { self globalNamed: 'SCIExcludedTests'. self globalNamed: 'SCIPassingTests' } ]
 		ifFalse: [ 
 			self pass
-				ifTrue: [ {Rowan globalNamed: 'SCIPassingTests'} ]
+				ifTrue: [ {self globalNamed: 'SCIPassingTests'} ]
 				ifFalse: [ 
 					| classNames |
 					classNames := self positionalArgs isEmpty
 						ifTrue: [ {'GsTestStatsTest'} ]
 						ifFalse: [ self positionalArgs ].
-					(classNames collect: [:each | Rowan globalNamed: each ]) reject: [:each | each isNil ] ] ].
-	runnerClass := Rowan globalNamed: 'GsTestStatsCITestRunner'.
+					(classNames collect: [:each | self globalNamed: each ]) reject: [:each | each isNil ] ] ].
+	runnerClass := self globalNamed: 'GsTestStatsCITestRunner'.
 	runner := self debug
 		ifTrue: [
 			runnerClass 
@@ -62,8 +62,8 @@ doit
 				runClasses: classes
 				named: 'Stdout-testReportSuccess' ].
 	reporter := self notPassing
-		ifTrue: [  (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') reportNotPassing: runner ]
-		ifFalse: [ (Rowan globalNamed: 'GsTestStatsCITestReporterStdout') report: runner ].
+		ifTrue: [  (self globalNamed: 'GsTestStatsCITestReporterStdout') reportNotPassing: runner ]
+		ifFalse: [ (self globalNamed: 'GsTestStatsCITestReporterStdout') report: runner ].
 	runner isSuccessful
 		ifFalse: [ self exitWithStatus: 1 ].
 	^ self noResult
