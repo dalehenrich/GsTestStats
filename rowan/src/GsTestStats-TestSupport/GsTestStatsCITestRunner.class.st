@@ -28,6 +28,14 @@ GsTestStatsCITestRunner class >> debugSuite: aTestSuite [
 		debug
 ]
 
+{ #category : 'running' }
+GsTestStatsCITestRunner class >> debugUnexpectedFailures: aTestSuite expectedFailures: aGsTestSuiteSample [
+	^ GsTestStatsCIDebugUnexpectedFailuresTestRunner new
+		initializeOn: aTestSuite;
+		expectedFailuresTestSuiteSample: aGsTestSuiteSample;
+		debug
+]
+
 { #category : 'constants' }
 GsTestStatsCITestRunner class >> errorExceptions [
 	^ Halt, Error, TestFailure

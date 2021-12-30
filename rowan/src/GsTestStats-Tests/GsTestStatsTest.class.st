@@ -464,6 +464,80 @@ GsTestStatsTest class >> successJsonWithBranchAndCommitSha [
 }'
 ]
 
+{ #category : 'fixtures' }
+GsTestStatsTest class >> unexpectedFailureJson [
+	^ '{
+	"branch" : "",
+	"commitSha" : "",
+	"deprecationWarnings" : [
+		"SCIExcludedTests>>testDeprecation (This is just a test)"
+	],
+	"gsVersion" : "3.7.0",
+	"notes" : "",
+	"properties" : { },
+	"resultsSummary" : {
+		"errors" : 2,
+		"failures" : 3,
+		"passed" : 3,
+		"summary" : "8 Tests with 3 Failures, 2 Errors and 1 DeprecationWarnings in 0.00s",
+		"tests" : 8,
+		"time" : 0.0
+	},
+	"suiteName" : "TestSuiteSample-testReportFailure",
+	"testCases" : [
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "failures",
+			"selector" : "testAssertError",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "passed",
+			"selector" : "testDeprecation",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "errors",
+			"selector" : "testError",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "failures",
+			"selector" : "testFailure",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "errors",
+			"selector" : "testShouldFail",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "passed",
+			"selector" : "testShouldPass",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "passed",
+			"selector" : "testShouldPassUnexpectedly",
+			"time" : "0"
+		},
+		{
+			"className" : "SCIExcludedUnexpectedFailureTests",
+			"status" : "failures",
+			"selector" : "testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog",
+			"time" : "0"
+		}
+	],
+	"timeStamp" : "2021-12-02T15:13:56.999921-08:00"
+}'
+]
+
 { #category : 'helpers' }
 GsTestStatsTest >> assert: aFixture matches: aString [
 	"Assert that all characters of aFixture are also in aString (also respect the order)."
@@ -536,6 +610,29 @@ GsTestStatsTest >> testAddedAndRemovedTestSampleComparison [
 	result := stream contents.
 
 	self assert: self class compareJsonToAddedAndRemovedTestCases matches: result
+]
+
+{ #category : 'tests' }
+GsTestStatsTest >> testDebugUnexpectedTestFailure [
+	| warnings expectedFailuresTestSuiteSample sawError |
+	warnings := GsTestStatsCI deprecationWarnings.
+	[ 
+	GsTestStatsCI deprecatedReset.
+	expectedFailuresTestSuiteSample := GsTestSuiteSample
+		fromJsonStream: self class unexpectedFailureJson readStream.
+	sawError := false.
+	[ 
+	GsTestStatsCITestRunner
+		debugUnexpectedFailures: SCIExcludedUnexpectedFailureTests suite
+		expectedFailures: expectedFailuresTestSuiteSample ]
+		on: Error
+		do: [ :ex | 
+			self
+				assert: ex messageText
+				equals: 'SCIExcludedUnexpectedFailureTests debug: #testShouldPass'.
+			sawError := true ].
+	self assert: sawError description: 'expected a test error' ]
+		ensure: [ GsTestStatsCI deprecationWarnings: warnings ]
 ]
 
 { #category : 'tests' }

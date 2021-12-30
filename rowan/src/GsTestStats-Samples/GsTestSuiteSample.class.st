@@ -304,6 +304,20 @@ GsTestSuiteSample >> _testCaseSampleMaps [
 	^ { pass . fail . error}
 ]
 
+{ #category : 'comparison' }
+GsTestSuiteSample >> _testCasesMap [
+	| classMap |
+	classMap := Dictionary new.
+	self testCases
+		do: [ :testCaseSample | 
+			| selectorMap |
+			selectorMap := classMap
+				at: testCaseSample className
+				ifAbsentPut: [ Dictionary new ].
+			selectorMap at: testCaseSample selector put: testCaseSample ].
+	^ classMap
+]
+
 { #category : 'updating' }
 GsTestSuiteSample >> addTestCaseSample: aGsTestCaseSample [
 	self testCases add: aGsTestCaseSample
