@@ -1674,14 +1674,10 @@ fromDictionary: sampleDict
 category: 'instance creation'
 classmethod: GsTestSuiteSample
 fromJson: filePath
-	| fileRef sampleDict |
-	fileRef := filePath asFileReference.
-	fileRef
-		readStreamDo: [ :fileStream | 
-			| bufferedStream |
-			bufferedStream := ZnBufferedReadStream on: fileStream.
-			bufferedStream sizeBuffer: fileRef size.
-			sampleDict := STON fromStream: bufferedStream ].
+	| fileStream sampleDict |
+	fileStream := GsFile openReadOnServer: filePath.
+	sampleDict := STON fromStream: fileStream.
+	fileStream close.
 	^ self fromDictionary: sampleDict
 %
 
