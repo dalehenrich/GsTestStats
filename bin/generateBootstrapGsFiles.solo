@@ -1,0 +1,50 @@
+#!/usr/bin/env superdoit_solo
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]
+
+DESCRIPTION
+  Script for generating GsTestStats.gs file for bootstrapping GsTestStats into 
+  a GemStone image that does not have Rowan installed.
+
+  Should be run whenever a new release of GsTestStats is ready to go.
+
+OPTIONS
+  -h, --help                 display usage message.
+  -D, --debug                bring up topaz debugger in the event of a script error.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename $GS_HOME/shared/
+  $basename 
+-----
+%
+doit
+	| rootDir gsDir filename attributes projectSetDefinition projectSetModification visitor headerStream importSpec importProject specUrl |
+	rootDir := self scriptPath asFileReference parent parent.
+	gsDir :=  rootDir / 'gs' .
+	filename := 'GsTestStats'.
+	
+	attributes :=  { 'stone' . 'common' . Rowan platform basePlatformConditionalAttribute }.
+	projectSetDefinition := RwProjectSetDefinition new. 
+	headerStream := WriteStream on: String new.
+	headerStream nextPutAll: '! GsTestStats fileout'; lf; lf.
+		specUrl := 'file://', rootDir pathString, '/rowan/specs/GsTestStats.ston'.
+		importSpec := RwSpecification fromUrl: specUrl.
+		importSpec
+			projectsHome: rootDir parent;
+			yourself.
+		importProject := importSpec resolve read: attributes.
+		projectSetDefinition addProject: importProject.
+		projectSetModification := projectSetDefinition
+			compareAgainstBase: RwProjectSetDefinition new.
+		visitor := GsModificationTopazWriterVisitor new
+			repositoryRootPath: gsDir;
+			topazFileHeader: headerStream contents;
+			topazFilename: filename;
+			yourself.
+		visitor visit: projectSetModification.
+	^ self noResult
+%
+
