@@ -155,7 +155,7 @@ SCIExcludedTests
 [1m[0m[1m[31m ✗ #testError (ms)[0m
 [1m[0m[1m[33m ✗ #testFailure (ms)[0m
 [1m[0m[1m[31m ✗ #testShouldFail (ms)[0m
-[1m[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThat...splayedCorrectlyInATravisLog (ms)[0m
+[1m[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog (ms)[0m
 [1m[0m
 [1m[31m######################################
 [1m[31m# 1 smalltalkCI Deprecation Warnings #
@@ -267,7 +267,7 @@ SCIExcludedTests
 [1m[0m[1m[31m ✗ #testError (ms)[0m
 [1m[0m[1m[33m ✗ #testFailure (ms)[0m
 [1m[0m[1m[31m ✗ #testShouldFail (ms)[0m
-[1m[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThat...splayedCorrectlyInATravisLog (ms)[0m
+[1m[0m[1m[33m ✗ #testThisIsAVeryLongMethodNameThatProbablyNeedsToBeContractedInOrderToBeDisplayedCorrectlyInATravisLog (ms)[0m
 [1m[0m
 [1m[31m######################################
 [1m[31m# 1 smalltalkCI Deprecation Warnings #
