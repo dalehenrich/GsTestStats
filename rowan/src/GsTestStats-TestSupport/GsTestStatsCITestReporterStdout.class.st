@@ -91,7 +91,7 @@ GsTestStatsCITestReporterStdout >> printEnd [
 GsTestStatsCITestReporterStdout >> printException: aResult [
 	self
 		setModeBold;
-		print: (aResult ansiTitleContractedTo: 70);
+		print: aResult ansiTitle;
 		newLine;
 		setModeBold;
 		resetMode.
