@@ -1,7 +1,7 @@
 RwLoadSpecificationV2 {
 	#specName : 'GsTestStats',
 	#projectName : 'GsTestStats',
-	#gitUrl : 'https://github.com/dalehenrich/GsTestStats',
+	#gitUrl : 'git@github.com:dalehenrich/GsTestStats.git',
 	#revision : 'v1',
 	#projectSpecFile : 'rowan/project.ston',
 	#componentNames : [

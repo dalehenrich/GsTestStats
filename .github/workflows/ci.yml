@@ -25,10 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: setup-superDoit
-        uses: dalehenrich/setup-superDoit@v2.0
+        uses: dalehenrich/setup-superDoit@v2.0.3
         with:
           gemstone-version: ${{ matrix.gsvers }}
-          superDoit-branch: 'v2.0'
+          superDoit-branch: 'v2.2.0'
       - uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
