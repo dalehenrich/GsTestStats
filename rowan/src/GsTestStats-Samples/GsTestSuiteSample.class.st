@@ -48,15 +48,18 @@ GsTestSuiteSample class >> fromDictionary: sampleDict [
 GsTestSuiteSample class >> fromJson: filePath [
 	| fileStream sampleDict |
 	fileStream := GsFile openReadOnServer: filePath.
-	sampleDict := STON fromStream: fileStream.
+	(System myUserProfile objectNamed: 'STON')
+		ifNil: [ sampleDict := JsonParser parse: fileStream contents ]
+		ifNotNil: [ :stonClass | sampleDict := stonClass fromStream: fileStream ].
 	fileStream close.
 	^ self fromDictionary: sampleDict
 ]
 
 { #category : 'instance creation' }
 GsTestSuiteSample class >> fromJsonStream: aStream [
+	"not expected to work if STON is not present"
 	| sample resultsSummary |
-	sample := self fromDictionary: (STON fromStream: aStream).
+	sample := self fromDictionary: ((System myUserProfile objectNamed: #'STON') fromStream: aStream).
 	resultsSummary := sample resultsSummary.
 	resultsSummary copy
 		keysAndValuesDo: [ :key :value | 
@@ -527,9 +530,11 @@ GsTestSuiteSample >> deprecationWarnings: aCollection [
 
 { #category : 'exporting' }
 GsTestSuiteSample >> exportJsonTo: aStream [
-	| jsonObject jsonTestCases |
+	"not expected to work if STON is not present"
+	| jsonObject jsonTestCases dictClass |
 	jsonTestCases := {}.
-	jsonObject := GsTonelOrderedDictionary new
+	dictClass := (System myUserProfile objectNamed: #'GsTonelOrderedDictionary') ifNil: [ Dictionary ].
+	jsonObject := dictClass new
 		at: 'branch' put: self branch;
 		at: 'commitSha' put: self commitSha;
 		at: 'deprecationWarnings' put: self deprecationWarnings;
@@ -548,13 +553,13 @@ GsTestSuiteSample >> exportJsonTo: aStream [
 		do: [ :testCase | 
 			jsonTestCases
 				add:
-					(GsTonelOrderedDictionary new
+					(dictClass new
 						at: 'className' put: testCase className asString;
 						at: 'status' put: testCase status asString;
 						at: 'selector' put: testCase selector asString;
 						at: 'time' put: testCase time asString;
 						yourself) ].
-	STON put: jsonObject asJsonOnStreamPretty: aStream
+	(System myUserProfile objectNamed: #'STON') put: jsonObject asJsonOnStreamPretty: aStream
 ]
 
 { #category : 'accessing' }
