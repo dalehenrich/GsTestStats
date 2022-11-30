@@ -16,7 +16,6 @@ OPTIONS
 EXAMPLES
   $basename --help
   $basename -D
-  $basename $GS_HOME/shared/
   $basename 
 -----
 %

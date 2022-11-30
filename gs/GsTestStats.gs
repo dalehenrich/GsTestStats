@@ -1616,6 +1616,8 @@ printResult: aResult
 category: 'printing'
 method: GsTestStatsCITestReporterTestSuiteSample
 printStart
+	| dictClass |
+	dictClass := (System myUserProfile objectNamed: #'GsTonelOrderedDictionary') ifNil: [ Dictionary ].
 	self testSuiteSample
 		suiteName: runner suiteName;
 		timeStamp: DateAndTime now printString;
@@ -1624,7 +1626,7 @@ printStart
 		gsVersion: (System gemVersionAt: #'gsVersion');
 		testCases: {};
 		resultsSummary:
-				(GsTonelOrderedDictionary new
+				(dictClass new
 						at: #'errors' put: runner erroredTests;
 						at: #'failures' put: runner failedTests;
 						at: #'passed' put: runner passingTests;
