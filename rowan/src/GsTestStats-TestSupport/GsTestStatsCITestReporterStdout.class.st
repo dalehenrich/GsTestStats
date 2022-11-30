@@ -44,15 +44,28 @@ GsTestStatsCITestReporterStdout >> printBanner: aTitle color: aColor [
 { #category : 'printing' }
 GsTestStatsCITestReporterStdout >> printBanner: aTitle subtitle: aSubtitle color: aColor [
 	| textLength separator |
-	textLength := (aTitle size max: aSubtitle size).
-	separator := String new: (textLength + 4) withAll: $#. "+ 4 for `#  #` (see below)"
-	self newLine;
-		setModeBold; print: aColor, separator; newLine;
-		setModeBold; print: aColor, '# ', (self rightPad: aTitle to: textLength), ' #'; newLine.
-	aSubtitle ifNotEmpty: [
-		self setModeBold; print: aColor, '# ', (self rightPad: aSubtitle to: textLength), ' #'; newLine ].
+	textLength := aTitle size max: aSubtitle size.
+	separator := (String new: textLength + 4)
+		atAllPut: $#;
+		yourself.	"+ 4 for `#  #` (see below)"
 	self
-		setModeBold; print: aColor, separator; newLine;
+		newLine;
+		setModeBold;
+		print: aColor , separator;
+		newLine;
+		setModeBold;
+		print: aColor , '# ' , (self rightPad: aTitle to: textLength) , ' #';
+		newLine.
+	aSubtitle
+		ifNotEmpty: [ 
+			self
+				setModeBold;
+				print: aColor , '# ' , (self rightPad: aSubtitle to: textLength) , ' #';
+				newLine ].
+	self
+		setModeBold;
+		print: aColor , separator;
+		newLine;
 		resetMode
 ]
 
@@ -178,7 +191,11 @@ GsTestStatsCITestReporterStdout >> resetMode [
 
 { #category : 'helpers' }
 GsTestStatsCITestReporterStdout >> rightPad: aString to: length [
-	^ aString, (String new: (length - aString size) withAll: Character space)
+	^ aString
+		,
+			((String new: length - aString size)
+				atAllPut: Character space;
+				yourself)
 ]
 
 { #category : 'ansi' }
